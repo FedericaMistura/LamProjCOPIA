@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FirstFragment">
+
+    <fragment
+        android:id="@+id/gmap"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:context=".FirstFragment"
+        tools:layout_editor_absoluteX="16dp"
+        />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#40000050"
+        >
+        <TextView
+            android:textSize="16dp"
+            android:fontFamily="courier new"
+            android:textStyle="bold"
+            android:id="@+id/txt_lte"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_y="0dp"
+            android:text="LTE"
+            android:textColor="@color/white" />
+        <TextView
+            android:textSize="16dp"
+            android:fontFamily="courier new"
+            android:textStyle="bold"
+            android:id="@+id/txt_wifi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_y="0dp"
+            android:text="Wifi"
+            android:textColor="@color/white" />
+        <TextView
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:fontFamily="courier new"
+            android:id="@+id/txt_noise"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_y="0dp"
+            android:text="NOISE"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+
+</RelativeLayout>

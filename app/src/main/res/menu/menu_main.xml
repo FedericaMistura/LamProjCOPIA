@@ -1,0 +1,30 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.lamproj.MainActivity">
+    <item
+        android:id="@+id/action_wifi"
+        android:orderInCategory="100"
+        android:title="@string/action_wifi"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_lte"
+        android:orderInCategory="100"
+        android:title="@string/action_lte"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_noise"
+        android:orderInCategory="100"
+        android:title="@string/action_noise"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_quit"
+        android:orderInCategory="100"
+        android:title="@string/action_quit"
+        app:showAsAction="never" />
+</menu>
