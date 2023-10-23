@@ -9,6 +9,10 @@ import com.example.lamproj.data.SampleDao;
 import com.example.lamproj.gmap.MapManager;
 import com.example.lamproj.sensors.SensorHub;
 
+/*
+Classe utilizzata per inizializzare e mantenere oggetti e risorse
+globali (DB, MapManager e SensorHub) a livello di applicazione.
+ */
 public class App extends Application{
     public SampleDB db;
     public MapManager mapManager;
@@ -22,6 +26,9 @@ public class App extends Application{
     @Override
     public void onCreate() {
         super.onCreate();
+        /*
+        Inizializza il database utilizzando Room
+         */
         db = Room.databaseBuilder(getApplicationContext(),
                 SampleDB.class, "samples").allowMainThreadQueries().build();
         mapManager=new MapManager();

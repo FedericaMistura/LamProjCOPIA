@@ -50,13 +50,20 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
+        /*
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(binding.getRoot(), "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAnchorView(R.id.fab)
                         .setAction("Action", null).show();
+            }
+        });*/
+        binding.fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Invoca il metodo per registrare le misurazioni
+                recordStateAndInform();
             }
         });
     }
@@ -164,8 +171,11 @@ public class MainActivity extends AppCompatActivity {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
-
+    /*
+    mostrare messaggio all'utente
+     */
     public void snap(String msg){
+
        /*
             Snackbar.make(App.A.context, "Replace with your own action", Snackbar.LENGTH_LONG)
                     .setAnchorView(R.id.fab)
@@ -174,6 +184,16 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG)
                 .setAnchorView(R.id.fab)
                 .setAction("Action", null).show();
+    }
+
+    public void recordStateAndInform(){
+
+            App.A.sensorHub.recordNewSample();
+
+            String message = "The measurement was successful";
+            snap(message);
+
+
     }
 
 }

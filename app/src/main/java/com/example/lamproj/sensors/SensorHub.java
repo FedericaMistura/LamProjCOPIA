@@ -16,6 +16,10 @@ public class SensorHub {
     private WifiSubSystem wifiSubSystem;
     private LteSubSystem lteSubSystem;
 
+    private boolean audioSubSystemRecording = false;
+    private boolean wifiSubSystemRecording = false;
+    private boolean lteSubSystemRecording = false;
+
 
     public SensorHub() {
         audioSubSystem=new AudioSubSystem();
@@ -54,7 +58,19 @@ public class SensorHub {
         lteSubSystem.stopMetering();
 
     }
+    /*
+    public void recordLTEState() {
+        lteSubSystem.startMetering();
+    }
 
+    public void recordWiFiState() {
+        wifiSubSystem.startMetering();
+    }
+
+    public void recordNoiseState() {
+        audioSubSystem.startMetering();
+    }
+    */
 
 
 }
