@@ -1,7 +1,9 @@
 package com.example.lamproj.tiles;
 
+import com.example.lamproj.data.Sample;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.maps.android.SphericalUtil;
 
 import java.util.ArrayList;
@@ -14,15 +16,23 @@ public class TileGrid {
     public double horizontalSizeInMeters;
     public double verticalSizeInMeters;
 
+    public ArrayList<Tile> tiles;
+
     public TileGrid(LatLng _topLeftCorner,  double hsize, double vsize, double _tileRadiusInMeters) {
         topLeftCorner=_topLeftCorner;
         tileRadiusInMeters=_tileRadiusInMeters;
         horizontalSizeInMeters=hsize;
         verticalSizeInMeters=vsize;
+        createTiles();
     }
 
-    public List<Tile> getTiles(){
-        List<Tile> l= new ArrayList<Tile>();
+    public void setRadius(double tileRadiusInMeters){
+        this.tileRadiusInMeters = tileRadiusInMeters;
+        createTiles();
+    }
+
+    private void createTiles(){
+        tiles = new ArrayList<Tile>();
         double offset=tileRadiusInMeters*Math.sqrt(3);
         int nCols= (int) (horizontalSizeInMeters/offset);
         int nRows= (int) (verticalSizeInMeters/offset);
@@ -45,13 +55,10 @@ public class TileGrid {
 
 
 
-                l.add(t);
+                tiles.add(t);
             }
 
         }
-
-
-        return l;
     }
 
     public  void addToGoogleMap(GoogleMap mMap) {
@@ -61,8 +68,35 @@ public class TileGrid {
         if (clear)
             mMap.clear();
 
-        for (Tile t: getTiles() ) {
-            mMap.addPolygon(t.toPolygon());
+        for (Tile t: tiles) {
+            PolygonOptions polygon = t.getPolygonOptions();
+            mMap.addPolygon(polygon);
         }
+    }
+
+    public void addSample(Sample s){
+        double dMin = tileRadiusInMeters * 10;
+        Tile tMin = null;
+        for(Tile t : tiles){
+            double distance = t.distanceFrom(s.latitude, s.longitude);
+            if(distance <= tileRadiusInMeters){
+                if(distance < dMin){
+                    dMin = distance;
+                    tMin = t;
+                }
+            }
+        }
+        if(tMin != null){
+            tMin.samples.add(s);
+        }
+    }
+    public void populate(List<Sample> samples){
+        for(Tile t : tiles){
+            t.samples.clear();
+        }
+        for(Sample s : samples){
+            addSample(s);
+        }
+
     }
 }

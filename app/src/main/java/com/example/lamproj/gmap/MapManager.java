@@ -44,12 +44,20 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     private Handler timerHandler;
     private Runnable timerRunnable;
 
+    private TileGrid tiles;
+    private double radiusInMeters = 500;
 
-
+    public int getSamplesCount(){
+        return allSamples.size();
+    }
     public Location getCurrentLocation() {
         return current_location;
     }
 
+    public void setTileGrid(double radiusInMeters){
+        LatLng BOLOGNA_NW = new LatLng(44.52, 11.286387);
+        tiles = new TileGrid(BOLOGNA_NW,10000.0,10000.0,radiusInMeters);
+    }
     public void onMapReady(GoogleMap googleMap) {
         this.mMap=googleMap;
         mMap.setOnMyLocationButtonClickListener(this);
@@ -73,6 +81,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
             @Override
             public void onGetListSampleComplete(List<Sample> ss) {
                 allSamples =ss;
+                tiles.populate(ss);
             }
         });
 
@@ -87,12 +96,15 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
             }
         };
         timerHandler.post(timerRunnable);
+
+        setTileGrid(this.radiusInMeters);
     }
 
     public void newSampleAdded(Sample s) {
         // aggiorniamo la lista di sample in memoria senza dovere rileggere tutto dal db
         if (allSamples != null) {
             allSamples.add(s);
+            tiles.addSample(s);
         }
         invalidateView();
     }
@@ -130,8 +142,8 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         LatLng BOLOGNA_NW = new LatLng(44.52, 11.286387);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BOLOGNA, 12));
 
-        TileGrid tg=new TileGrid(BOLOGNA_NW,10000.0,10000.0,500);
-        tg.addToGoogleMap(mMap);
+
+        tiles.addToGoogleMap(mMap); //aggiunge se stessa modificata
     }
 
     private void showLteData(){

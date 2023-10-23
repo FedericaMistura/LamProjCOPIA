@@ -26,7 +26,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
     private boolean updatesEnabled=false;
-    private TextView tvNoise,  tvLte, tvWifi;
+    private TextView tvNoise,  tvLte, tvWifi, tvCount;
     private Handler timerHandler;
     private Runnable timerRunnable;
 
@@ -59,6 +59,7 @@ public class FirstFragment extends Fragment {
         tvLte= (TextView) view.findViewById(R.id.txt_lte);
         tvNoise= (TextView) view.findViewById(R.id.txt_noise);
         tvWifi= (TextView) view.findViewById(R.id.txt_wifi);
+        tvCount = (TextView) view.findViewById(R.id.txt_count);
     }
 
     private  void stopGetUpdates(){
@@ -87,6 +88,7 @@ public class FirstFragment extends Fragment {
             tvLte.setText( String.format("  LTE %.1f dBm", App.A.sensorHub.level_lte));
             tvWifi.setText( String.format(" WIFI %.1f dBm", App.A.sensorHub.level_wifi));
             tvNoise.setText( String.format("NOISE %.1f dB", App.A.sensorHub.level_noise));
+            tvCount.setText( String.format("SAMPLES %d", App.A.mapManager.getSamplesCount()));
         }
     }
 
