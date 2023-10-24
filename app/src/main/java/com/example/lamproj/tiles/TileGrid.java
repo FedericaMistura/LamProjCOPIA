@@ -69,7 +69,8 @@ public class TileGrid {
             mMap.clear();
 
         for (Tile t: tiles) {
-            PolygonOptions polygon = t.getPolygonOptions();
+            //PolygonOptions polygon = t.getPolygonOptions();
+            PolygonOptions polygon = t.setColorHexagone();
             mMap.addPolygon(polygon);
         }
     }

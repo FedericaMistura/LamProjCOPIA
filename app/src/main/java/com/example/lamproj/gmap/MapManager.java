@@ -55,8 +55,9 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     }
 
     public void setTileGrid(double radiusInMeters){
-        LatLng BOLOGNA_NW = new LatLng(44.52, 11.286387);
-        tiles = new TileGrid(BOLOGNA_NW,10000.0,10000.0,radiusInMeters);
+        //LatLng BOLOGNA_NW = new LatLng(44.52, 11.286387);
+        LatLng finaleEmilia = new LatLng(44.830321, 11.290487);
+        tiles = new TileGrid(finaleEmilia,50000.0,50000.0,radiusInMeters);
     }
     public void onMapReady(GoogleMap googleMap) {
         this.mMap=googleMap;
