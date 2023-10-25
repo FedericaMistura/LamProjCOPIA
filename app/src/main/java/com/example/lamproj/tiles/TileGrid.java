@@ -1,5 +1,7 @@
 package com.example.lamproj.tiles;
 
+import static com.example.lamproj.gmap.MapManager.VIEW_LTE;
+
 import com.example.lamproj.data.Sample;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -31,9 +33,12 @@ public class TileGrid {
         createTiles();
     }
 
+    /*
+    Generazione griglia di esagoni che copre una determinata area.
+     */
     private void createTiles(){
         tiles = new ArrayList<Tile>();
-        double offset=tileRadiusInMeters*Math.sqrt(3);
+        double offset=tileRadiusInMeters*Math.sqrt(3); //Distanza tra centro esagono e vertice
         int nCols= (int) (horizontalSizeInMeters/offset);
         int nRows= (int) (verticalSizeInMeters/offset);
         Tile t;
@@ -60,21 +65,31 @@ public class TileGrid {
 
         }
     }
-
-    public  void addToGoogleMap(GoogleMap mMap) {
-        addToGoogleMap(mMap,true);
+    /*
+    rimuovere tutti gli oggetti presenti precedentemente sulla mappa e quindi aggiungere le tiles
+     */
+    public  void addToGoogleMap(GoogleMap mMap, int view) {
+        addToGoogleMap(mMap, view, true);
     }
-    public void addToGoogleMap(GoogleMap mMap,  boolean clear) {
+
+    /*
+    Controlla se rimuovere o meno gli oggetti precedentemente presenti sulla mappa
+    poi aggiunge nuove tiles.
+     */
+    public void addToGoogleMap(GoogleMap mMap, int view, boolean clear) {
         if (clear)
             mMap.clear();
 
         for (Tile t: tiles) {
-            //PolygonOptions polygon = t.getPolygonOptions();
-            PolygonOptions polygon = t.setColorHexagone();
+            PolygonOptions polygon = t.getPolygonOptions(view);
+            //PolygonOptions polygon = t.setColorHexagone();
             mMap.addPolygon(polygon);
         }
     }
 
+    /*
+    Aggiunge il sample al relativo tile calcolando la distanza
+    */
     public void addSample(Sample s){
         double dMin = tileRadiusInMeters * 10;
         Tile tMin = null;
@@ -88,12 +103,16 @@ public class TileGrid {
             }
         }
         if(tMin != null){
-            tMin.samples.add(s);
+            tMin.addSample(s);
         }
     }
+
+    /*
+    Aggiunge una lista di samples al tile.
+     */
     public void populate(List<Sample> samples){
         for(Tile t : tiles){
-            t.samples.clear();
+            t.clearSamples();
         }
         for(Sample s : samples){
             addSample(s);

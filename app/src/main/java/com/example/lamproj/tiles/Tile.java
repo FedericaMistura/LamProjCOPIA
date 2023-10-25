@@ -1,10 +1,15 @@
 package com.example.lamproj.tiles;
 
+import static com.example.lamproj.gmap.MapManager.VIEW_LTE;
+import static com.example.lamproj.gmap.MapManager.VIEW_NOISE;
+import static com.example.lamproj.gmap.MapManager.VIEW_WIFI;
+
 import android.graphics.Color;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.example.lamproj.App;
 import com.example.lamproj.data.Sample;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -20,7 +25,11 @@ public class Tile {
     public LatLng center;
     public double radiusInMeters;
     private PolygonOptions polygon;
-    public ArrayList<Sample> samples = new ArrayList<Sample>();
+    private double avgLte=0;
+    private double avgWifi=0;
+    private double avgNoise=0;
+    private ArrayList<Sample> samples = new ArrayList<Sample>();
+
 
     public Tile (LatLng c, double r) {
         center=c;
@@ -31,23 +40,74 @@ public class Tile {
         center=new LatLng(lat,lon);
         radiusInMeters=r;
     }
-
     /*
-    public PolygonOptions getPolygonOptions() {
+    Oltre ad aggiungere, fa il ricalcolo della media
+     */
+    public void addSample(Sample s) {
+        samples.add(s);
+        recalcAvg();
+    }
+    //Elimina i samples
+    public void clearSamples() {
+        samples.clear();
+        recalcAvg();
+    }
+
+    protected  void recalcAvg() {
+        if (samples.size() == 0) {
+            avgLte = 0;
+            avgWifi = 0;
+            avgNoise = 0;
+        } else { //calcoliamo media
+            avgLte = samples.stream().mapToDouble(e -> e.lte).sum() / samples.size();
+            avgWifi = samples.stream().mapToDouble(e -> e.wifi).sum() / samples.size();
+            avgNoise = samples.stream().mapToDouble(e -> e.noise).sum() / samples.size();
+        }
+    }
+
+    public int getProperFillColor(int viewType){
+        int color= App.A.mapManager.colorNone;
+        if (samples.size()>0){
+            switch (viewType) {
+                case VIEW_WIFI:
+                    if (avgWifi<App.A.mapManager.wifiLow)
+                        color=App.A.mapManager.colorLow;
+                    else if (avgWifi<App.A.mapManager.wifiMid)
+                        color=App.A.mapManager.colorMid;
+                    else
+                        color=App.A.mapManager.colorHigh;
+                    break;
+                case VIEW_LTE:
+                    if (avgLte<App.A.mapManager.lteLow)
+                        color=App.A.mapManager.colorLow;
+                    else if (avgLte<App.A.mapManager.lteMid)
+                        color=App.A.mapManager.colorMid;
+                    else
+                        color=App.A.mapManager.colorHigh;
+                    break;
+                case VIEW_NOISE:
+                    if (avgNoise<App.A.mapManager.noiseLow)
+                        color=App.A.mapManager.colorLow;
+                    else if (avgNoise<App.A.mapManager.noiseMid)
+                        color=App.A.mapManager.colorMid;
+                    else
+                        color=App.A.mapManager.colorHigh;
+                    break;
+            }        }
+
+        return color;
+    }
+
+    public PolygonOptions getPolygonOptions(int view) {
         if(polygon == null){
             polygon = this.toPolygon();
         }
+        polygon.strokeColor(0x10ff0000);
         //proprietà di colore
-        if(samples.size() > 0) {
-            polygon.strokeColor(0x50ff0000);
-            polygon.fillColor(0x30ff0000);
-        } else {
-            polygon.strokeColor(0x20ff0000);
-            polygon.fillColor(0x20ff0000);
-        }
+        polygon.fillColor(getProperFillColor(view));
         return polygon;
     }
-    */
+
 
     public PolygonOptions setColorHexagone(){
         if(polygon == null){

@@ -32,7 +32,18 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     public static final int VIEW_LTE = 2;
     public static final int VIEW_NOISE = 3;
 
+    public int colorNone=0x00000000;
+    public int colorLow=0x30FF0000;
+    public int colorMid=0x30FFFF00;
+    public int colorHigh=0x3000FF00;
 
+    //punti di taglio
+    public double lteLow=2;
+    public double lteMid=3;
+    public double wifiLow=-50;
+    public double wifiMid=-30;
+    public double noiseLow=-40;
+    public double noiseMid=-20;
     public int mapType=GoogleMap.MAP_TYPE_SATELLITE;
 
     private Location current_location;
@@ -46,6 +57,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     private TileGrid tiles;
     private double radiusInMeters = 500;
+    LatLng  finaleEmilia = new LatLng(44.830321, 11.290487);
 
     public int getSamplesCount(){
         return allSamples.size();
@@ -56,8 +68,8 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     public void setTileGrid(double radiusInMeters){
         //LatLng BOLOGNA_NW = new LatLng(44.52, 11.286387);
-        LatLng finaleEmilia = new LatLng(44.830321, 11.290487);
-        tiles = new TileGrid(finaleEmilia,50000.0,50000.0,radiusInMeters);
+        tiles = new TileGrid(finaleEmilia,10000.0,10000.0,radiusInMeters);
+
     }
     public void onMapReady(GoogleMap googleMap) {
         this.mMap=googleMap;
@@ -68,7 +80,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
         App.A.context.enableMyLocation();
         LatLng BOLOGNA = new LatLng(44.496781, 11.356387);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BOLOGNA, 12));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(finaleEmilia, 12));
 
         mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override
@@ -134,7 +146,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         current_view=view_id;
         invalidateView();
     }
-
+    /*
     private void showTestData(){
         mMap.clear();
 
@@ -144,23 +156,26 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BOLOGNA, 12));
 
 
-        tiles.addToGoogleMap(mMap); //aggiunge se stessa modificata
+
     }
+    */
 
     private void showLteData(){
         current_view=VIEW_LTE;
         mMap.clear();
-        showTestData();
+        tiles.addToGoogleMap(mMap, current_view);
     }
 
     private void showWiFiData(){
         current_view=VIEW_WIFI;
         mMap.clear();
+        tiles.addToGoogleMap(mMap, current_view);
     }
 
     private void showNoiseData(){
         current_view=VIEW_NOISE;
         mMap.clear();
+        tiles.addToGoogleMap(mMap, current_view);
     }
 
 
