@@ -38,12 +38,12 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     public int colorHigh=0x3000FF00;
 
     //punti di taglio
-    public double lteLow=2;
-    public double lteMid=3;
-    public double wifiLow=-50;
-    public double wifiMid=-30;
-    public double noiseLow=-40;
-    public double noiseMid=-20;
+    public double lteLow=-86;
+    public double lteMid=-66;
+    public double wifiLow=-71;
+    public double wifiMid=-50;
+    public double noiseLow=-10;
+    public double noiseMid=-50;
     public int mapType=GoogleMap.MAP_TYPE_SATELLITE;
 
     private Location current_location;
@@ -68,7 +68,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     public void setTileGrid(double radiusInMeters){
         //LatLng BOLOGNA_NW = new LatLng(44.52, 11.286387);
-        tiles = new TileGrid(finaleEmilia,10000.0,10000.0,radiusInMeters);
+        tiles = new TileGrid(finaleEmilia,40000.0,40000.0,radiusInMeters);
 
     }
     public void onMapReady(GoogleMap googleMap) {
