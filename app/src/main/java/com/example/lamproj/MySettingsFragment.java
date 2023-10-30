@@ -21,8 +21,8 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
     @Override
     public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
         if(preference.getKey().equals("cell_size_meters")){
-            int selectedRadius = Integer.parseInt(newValue.toString());
-            App.A.mapManager.setTileGrid(selectedRadius);
+            int newRadius = Integer.parseInt(newValue.toString());
+            App.A.mapManager.setTileGrid(newRadius);
         }
         return true;
     }
