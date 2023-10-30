@@ -108,7 +108,7 @@ public class Tile {
         return polygon;
     }
 
-
+    /*
     public PolygonOptions setColorHexagone(){
         if(polygon == null){
             polygon = this.toPolygon();
@@ -124,7 +124,7 @@ public class Tile {
         }
         return polygon;
     }
-
+   */
     private PolygonOptions toPolygon(){
         PolygonOptions polygonOptions = new PolygonOptions()
                 .addAll(createHexagon(center,radiusInMeters))

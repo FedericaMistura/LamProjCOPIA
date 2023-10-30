@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int RECORD_AUDIO_PERMISSION_REQUEST_CODE = 2;
     private boolean locationPermissionDenied = false;
     private boolean recordinAudioPermissionDenied = false;
+    private  NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         /*
@@ -83,22 +84,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id==R.id.action_settings) {
-/*
-            Sample s = new Sample();
-            s.latitude = 1;
-            s.longitude = 1;
-            App.A.db.putSample(s);
-            App.A.db.getAllSamples(new SampleDbListSampleResultInterface() {
-
-                @Override
-                public void onGetListSampleComplete(List<Sample> ss) {
-                    List<Sample> samples =ss;
-                    App.A.db.deleteAllSamples();
-                }
-            });
-
-*/
-            return true;
+            navController.navigate(R.id.action_FirstFragment_to_MySettingsFragment);
         }
         else if (id==R.id.action_lte) {
             App.A.mapManager.setCurrentView(MapManager.VIEW_LTE);

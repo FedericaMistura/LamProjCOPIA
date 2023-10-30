@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreferenceCompat
+        app:defaultValue="false"
+        app:key="auto_sample_recording"
+        app:title="Enable automatic sample recording"/>
+
+    <EditTextPreference
+        app:shouldDisableView="false"
+        app:defaultValue="60"
+        app:key="auto_sample_recording_time"
+        app:title="sample recording interval seconds"/>
+
+    <EditTextPreference
+        app:defaultValue="100"
+        app:key="auto_sample_recording_distance"
+        app:title="sample recording distance meters"/>
+
+    <EditTextPreference
+        app:defaultValue="100"
+        app:key="cell_size_meters"
+        app:title="hexagon radius in meters"
+        app:entries="@array/hexagon_radius_entries"
+        app:entryValues="@array/hexagon_radius_values"/>
+
+
+</PreferenceScreen>

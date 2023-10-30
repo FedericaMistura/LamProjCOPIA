@@ -55,7 +55,8 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     private Handler timerHandler;
     private Runnable timerRunnable;
 
-    private TileGrid tiles;
+    public TileGrid tiles;
+
     private double radiusInMeters = 500;
     LatLng  finaleEmilia = new LatLng(44.830321, 11.290487);
 

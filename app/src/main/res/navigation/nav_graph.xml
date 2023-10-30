@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -9,12 +8,17 @@
         android:id="@+id/FirstFragment"
         android:name="com.example.lamproj.FirstFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first"/>
+        tools:layout="@layout/fragment_first">
+        <action
+            android:id="@+id/action_FirstFragment_to_MySettingsFragment"
+            app:destination="@id/MySettingsFragment" />
+
+    </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.lamproj.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/MySettingsFragment"
+        android:name="com.example.lamproj.MySettingsFragment"
+        android:label="Settings"
+        tools:layout="@xml/preferences">
 
         <action
             android:id="@+id/action_SecondFragment_to_FirstFragment"
