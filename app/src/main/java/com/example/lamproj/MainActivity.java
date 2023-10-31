@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                App.A.db.deleteAllSamples();
                 App.A.mapManager.clearAllSamples();
                 dialog.dismiss();
             }
