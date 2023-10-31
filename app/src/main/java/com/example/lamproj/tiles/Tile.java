@@ -142,6 +142,9 @@ public class Tile {
         }
         return hexagon;
     }
+    public boolean hasSamples(){
+        return  samples.size()>0;
+    }
 
     public double distanceFrom(double latitude, double longitude){
         //distanze in metri

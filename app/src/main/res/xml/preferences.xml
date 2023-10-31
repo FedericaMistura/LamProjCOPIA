@@ -22,8 +22,7 @@
         app:defaultValue="100"
         app:key="cell_size_meters"
         app:title="hexagon radius in meters"
-        app:entries="@array/hexagon_radius_entries"
-        app:entryValues="@array/hexagon_radius_values"/>
+       />
 
 
 </PreferenceScreen>

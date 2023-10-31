@@ -26,7 +26,6 @@ public class App extends Application{
     public MainActivity context;
     public static App A;
     public boolean auto_recording=false;
-    public double cell_size = 100;
 
     public App() {
         A=this;
@@ -57,11 +56,22 @@ public class App extends Application{
     public void loadSettings(){
         Map<String,?> pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getAll();
 
-
-        this.auto_recording= (boolean) pref.get("auto_sample_recording");
-        this.cell_size = (double) pref.get("cell_size_meters");
-
-
+            //this.auto_recording= (boolean) pref.get("auto_sample_recording");
+            //mapManager.radiusInMeters = Double.parseDouble((String) pref.get("cell_size_meters"));
+        this.auto_recording = (boolean) getSetting(pref, "auto_sample_recording", false);
+        mapManager.radiusInMeters = getDoubleSetting(pref, "cell_size_meters", 100.0);
 
     }
+    public static Object getSetting(Map<String,?> map, String settingName, Object defaultValue) {
+        if (map.containsKey(settingName)) {
+            return  map.get(settingName);
+        } else return defaultValue;
+    }
+
+    public static double getDoubleSetting(Map<String,?> map, String settingName, Double defaultValue) {
+        if (map.containsKey(settingName)) {
+            return  Double.parseDouble((String) map.get(settingName));
+        } else return defaultValue;
+    }
+
 }

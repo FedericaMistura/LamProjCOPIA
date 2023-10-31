@@ -2,6 +2,8 @@ package com.example.lamproj;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -98,10 +100,35 @@ public class MainActivity extends AppCompatActivity {
         else if (id==R.id.action_quit) {
             this.finishAffinity();
         }
+        else if (id==R.id.action_delete){
+            showDeleteSamplesConfirmationDialog();
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void showDeleteSamplesConfirmationDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirm deletion of samples.");
+        builder.setMessage("Do you really want to delete all the samples?");
+        builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                App.A.mapManager.clearAllSamples();
+                dialog.dismiss();
+            }
+        });
+
+        builder.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -176,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
             App.A.sensorHub.recordNewSample();
 
-            String message = "The measurement was successful";
+            String message = "The measurement you have taken has been successful";
             snap(message);
 
 

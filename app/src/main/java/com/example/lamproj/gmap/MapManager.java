@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
+
 public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener {
     public GoogleMap mMap=null;
 
@@ -57,8 +58,11 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     public TileGrid tiles;
 
-    private double radiusInMeters = 500;
+    public  double radiusInMeters = 500;
+
     LatLng  finaleEmilia = new LatLng(44.830321, 11.290487);
+    LatLng  anzola = new LatLng(44.525320, 11.3116);
+
 
     public int getSamplesCount(){
         return allSamples.size();
@@ -69,8 +73,11 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     public void setTileGrid(double radiusInMeters){
         //LatLng BOLOGNA_NW = new LatLng(44.52, 11.286387);
-        tiles = new TileGrid(finaleEmilia,40000.0,40000.0,radiusInMeters);
-
+        tiles = new TileGrid(anzola,60000.0,60000.0,radiusInMeters);
+        if(allSamples != null){
+            tiles.populate(allSamples);
+        }
+        invalidateView(); //forzare la riscrittura
     }
     public void onMapReady(GoogleMap googleMap) {
         this.mMap=googleMap;
@@ -89,7 +96,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
                 current_location=arg0;
             }
         });
-
+        setTileGrid(this.radiusInMeters); //metodo sincrono
         // all'inizio ci carichiamo in memoria tutti i samples presenti nel db
         App.A.db.getAllSamples(new SampleDbListSampleResultInterface() {
             @Override
@@ -111,7 +118,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         };
         timerHandler.post(timerRunnable);
 
-        setTileGrid(this.radiusInMeters);
+
     }
 
     public void newSampleAdded(Sample s) {
@@ -191,6 +198,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     @Override
     public void onMapClick(@NonNull LatLng latLng) {
+        /*
         // When clicked on map
         // Initialize marker options
         MarkerOptions markerOptions=new MarkerOptions();
@@ -204,6 +212,15 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
         // Add marker on map
         mMap.addMarker(markerOptions);
+        */
+
     }
+
+    public void clearAllSamples(){
+        allSamples.clear();
+        tiles.clearTilesSamples();
+        invalidateView();
+    }
+
 
 }
