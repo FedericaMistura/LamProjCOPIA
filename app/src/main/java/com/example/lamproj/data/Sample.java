@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /*
     rappresenta un oggetto di dati per immagazzinare campioni.
     Associata a un database Room per la persistenza di dati
@@ -40,5 +42,9 @@ public class Sample {
 
     @ColumnInfo(name = "noise")
     public double noise; //valore rumore acquisito durante la rilevazione
+
+    public LatLng getLatLng(){
+        return new LatLng( latitude,longitude);
+    }
 
 }

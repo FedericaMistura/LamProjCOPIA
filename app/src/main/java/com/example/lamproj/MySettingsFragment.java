@@ -16,14 +16,23 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
 
         findPreference("auto_sample_recording").setOnPreferenceChangeListener(this);
         findPreference("cell_size_meters").setOnPreferenceChangeListener(this);
+
+
     }
 
     @Override
     public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
-        if(preference.getKey().equals("cell_size_meters")){
-            App.A.mapManager.radiusInMeters = Double.parseDouble(newValue.toString());
-            App.A.mapManager.setTileGrid(App.A.mapManager.radiusInMeters);
+        switch (preference.getKey()) {
+            case "cell_size_meters":
+                App.A.mapManager.radiusInMeters = Double.parseDouble(newValue.toString());
+                App.A.mapManager.setTileGrid(App.A.mapManager.radiusInMeters);
+                break;
+            case "auto_sample_recording_distance":
+                App.A.auto_recording_meters = Double.parseDouble(newValue.toString());
+                App.A.mapManager.checkNeedForAutoSampleCollectDistance();
+                break;
         }
+
         return true;
     }
 }

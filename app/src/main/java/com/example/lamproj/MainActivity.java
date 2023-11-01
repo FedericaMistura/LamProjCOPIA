@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Invoca il metodo per registrare le misurazioni
-                recordStateAndInform();
+                recordStateAndInform("The measurement taken manually");
             }
         });
     }
@@ -200,12 +200,12 @@ public class MainActivity extends AppCompatActivity {
                 .setAction("Action", null).show();
     }
 
-    public void recordStateAndInform(){
+    public void recordStateAndInform(String msg){
 
-            App.A.sensorHub.recordNewSample();
+        App.A.sensorHub.recordNewSample();
 
-            String message = "The measurement you have taken has been successful";
-            snap(message);
+//            String message = "The measurement you have taken has been successful";
+        snap(msg);
 
 
     }

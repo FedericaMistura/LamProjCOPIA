@@ -19,6 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.SphericalUtil;
 
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -94,6 +95,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
             @Override
             public void onMyLocationChange(Location arg0) {
                 current_location=arg0;
+                checkNeedForAutoSampleCollectDistance();
             }
         });
         setTileGrid(this.radiusInMeters); //metodo sincrono
@@ -220,6 +222,22 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         allSamples.clear();
         tiles.clearTilesSamples();
         invalidateView();
+    }
+
+    public void checkNeedForAutoSampleCollectDistance() {
+        if (App.A.auto_recording && current_location != null) {
+            double dist = 1000000.0; // numero  molto grande
+            double secs = 1000000000; ///
+
+            if (App.A.db.mostRecentSample != null) {
+                dist = SphericalUtil.computeDistanceBetween(new LatLng(current_location.getLatitude(), current_location.getLongitude()), App.A.db.mostRecentSample.getLatLng());
+                secs = (System.currentTimeMillis() - App.A.db.mostRecentSample.time) / 1000;
+            }
+            if (dist >= App.A.auto_recording_meters && secs >= App.A.auto_recording_seconds) {
+                String msg = String.format("Measurement taken automatically %.1f meters from previous point", App.A.auto_recording_meters);
+                App.A.context.recordStateAndInform(msg);
+            }
+        }
     }
 
 

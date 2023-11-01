@@ -19,11 +19,14 @@ public abstract class SampleDB extends RoomDatabase {
         dao = sampleDao();
     }
 
+    public Sample mostRecentSample;
+
     public void putSample(Sample s){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 dao.insertAll(s);
+                mostRecentSample=s;
             }
         }).start();
     }
@@ -34,6 +37,9 @@ public abstract class SampleDB extends RoomDatabase {
             @Override
             public void run() {
                 List<Sample>  samples = dao.getAll();
+                if (samples.size()>0) {
+                    mostRecentSample= samples.get(samples.size() - 1);
+                }
                 receiver.onGetListSampleComplete(samples);
             }
         }).start();
@@ -46,6 +52,7 @@ public abstract class SampleDB extends RoomDatabase {
                 for (Sample x: samples) {
                     dao.delete(x);
                 }
+                mostRecentSample=null;
             }
         }).start();
     }

@@ -26,6 +26,9 @@ public class App extends Application{
     public MainActivity context;
     public static App A;
     public boolean auto_recording=false;
+    public double auto_recording_meters=100;
+    public double auto_recording_seconds = 60;
+
 
     public App() {
         A=this;
@@ -60,6 +63,9 @@ public class App extends Application{
             //mapManager.radiusInMeters = Double.parseDouble((String) pref.get("cell_size_meters"));
         this.auto_recording = (boolean) getSetting(pref, "auto_sample_recording", false);
         mapManager.radiusInMeters = getDoubleSetting(pref, "cell_size_meters", 100.0);
+        this.auto_recording_meters = getDoubleSetting(pref, "auto_sample_recording_distance",100.0);
+        this.auto_recording_seconds = getDoubleSetting(pref, "auto_sample_recording_time", 100.0);
+
 
     }
     public static Object getSetting(Map<String,?> map, String settingName, Object defaultValue) {
