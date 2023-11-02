@@ -2,6 +2,8 @@ package com.example.lamproj.tiles;
 
 import static com.example.lamproj.gmap.MapManager.VIEW_LTE;
 
+import android.graphics.Color;
+
 import com.example.lamproj.data.Sample;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -15,10 +17,11 @@ public class TileGrid {
     public double tileRadiusInMeters;
     public LatLng topLeftCorner;
 
-    public double horizontalSizeInMeters;
+    public double horizontalSizeInMeters; //larghezza
     public double verticalSizeInMeters;
 
     public ArrayList<Tile> tiles;
+    public PolygonOptions bounds;
 
     public TileGrid(LatLng _topLeftCorner, double hsize, double vsize, double _tileRadiusInMeters) {
         topLeftCorner = _topLeftCorner;
@@ -26,6 +29,7 @@ public class TileGrid {
         horizontalSizeInMeters = hsize;
         verticalSizeInMeters = vsize;
         createTiles();
+        createBounds();
     }
 
     public void setRadius(double tileRadiusInMeters) {
@@ -45,6 +49,7 @@ public class TileGrid {
         LatLng c;
         LatLng start = topLeftCorner;
         LatLng tl2 = SphericalUtil.computeOffset(topLeftCorner, offset, 150);
+
         for (int row = 0; row < nRows; row++) {
             if ((row % 2) == 1) {
                 start = new LatLng(SphericalUtil.computeOffset(tl2, (row - 1) * tileRadiusInMeters * 1.5, 180).latitude, tl2.longitude);
@@ -65,6 +70,17 @@ public class TileGrid {
         }
     }
 
+    private void createBounds(){
+        List<LatLng> vert = new ArrayList<>();
+        vert.add(topLeftCorner);
+        LatLng p1 = SphericalUtil.computeOffset(topLeftCorner, horizontalSizeInMeters, 90);//punto che rappresenta il vertice
+        vert.add(p1);
+        LatLng p2 = SphericalUtil.computeOffset(p1, verticalSizeInMeters, 180);
+        vert.add(p2);
+        LatLng p3 = SphericalUtil.computeOffset(p2, horizontalSizeInMeters, 270);//punto che rappresenta il vertice
+        vert.add(p3);
+        bounds =  new PolygonOptions().addAll(vert).strokeColor(Color.GREEN);
+    }
     /*
     rimuovere tutti gli oggetti presenti precedentemente sulla mappa e quindi aggiungere le tiles
      */
@@ -79,6 +95,7 @@ public class TileGrid {
     public void addToGoogleMap(GoogleMap mMap, int view, boolean clear) {
         if (clear)
             mMap.clear();
+            mMap.addPolygon(bounds);
 
         for (Tile t : tiles) {
             if (t.hasSamples()) {

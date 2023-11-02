@@ -63,8 +63,12 @@ public class App extends Application{
             //mapManager.radiusInMeters = Double.parseDouble((String) pref.get("cell_size_meters"));
         this.auto_recording = (boolean) getSetting(pref, "auto_sample_recording", false);
         mapManager.radiusInMeters = getDoubleSetting(pref, "cell_size_meters", 100.0);
+        mapManager.zoneSize = getDoubleSetting(pref, "zone_size_meters", 30000.0);
         this.auto_recording_meters = getDoubleSetting(pref, "auto_sample_recording_distance",100.0);
         this.auto_recording_seconds = getDoubleSetting(pref, "auto_sample_recording_time", 100.0);
+        this.mapManager.colorLow = (int) getSetting(pref, "color_low", 0x30FF0000);
+        this.mapManager.colorMid = (int) getSetting(pref, "color_mid", 0x30FFFF00);
+        this.mapManager.colorHigh = (int) getSetting(pref, "color_high", 0x3000FF00);
 
 
     }

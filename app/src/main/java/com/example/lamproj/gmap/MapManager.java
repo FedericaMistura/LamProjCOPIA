@@ -60,10 +60,13 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     public TileGrid tiles;
 
     public  double radiusInMeters = 500;
+    public double zoneSize = 30000;
 
     LatLng  finaleEmilia = new LatLng(44.830321, 11.290487);
-    LatLng  anzola = new LatLng(44.525320, 11.3116);
+    LatLng  topLeftCorner = null;
 
+
+    //LatLng sanPietro = new LatLng(44.700885, 11.392653);
 
     public int getSamplesCount(){
         return allSamples.size();
@@ -72,9 +75,9 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         return current_location;
     }
 
-    public void setTileGrid(double radiusInMeters){
+    public void setTileGrid(){
         //LatLng BOLOGNA_NW = new LatLng(44.52, 11.286387);
-        tiles = new TileGrid(anzola,60000.0,60000.0,radiusInMeters);
+        tiles = new TileGrid(topLeftCorner, zoneSize, zoneSize, radiusInMeters);
         if(allSamples != null){
             tiles.populate(allSamples);
         }
@@ -88,23 +91,27 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         mMap.setMapType(mapType);
 
         App.A.context.enableMyLocation();
-        LatLng BOLOGNA = new LatLng(44.496781, 11.356387);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(finaleEmilia, 12));
 
         mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(Location arg0) {
-                current_location=arg0;
+                current_location=arg0; //mi serve per creare il nuovo sample
+                if(topLeftCorner == null){
+                    setNewZone(new LatLng(arg0.getLatitude(), arg0.getLongitude()));
+                }
+
                 checkNeedForAutoSampleCollectDistance();
             }
         });
-        setTileGrid(this.radiusInMeters); //metodo sincrono
+
         // all'inizio ci carichiamo in memoria tutti i samples presenti nel db
         App.A.db.getAllSamples(new SampleDbListSampleResultInterface() {
             @Override
             public void onGetListSampleComplete(List<Sample> ss) {
                 allSamples =ss;
-                tiles.populate(ss);
+                if(tiles != null) {
+                    tiles.populate(ss); //si fa dopo
+                }
             }
         });
 
@@ -123,6 +130,14 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     }
 
+    private void setNewZone(LatLng p0){
+        //creiamo il nuovo new TopLeftCorner
+
+        LatLng p1 = SphericalUtil.computeOffset(p0, zoneSize / 2, 270);
+        topLeftCorner = SphericalUtil.computeOffset(p1, zoneSize / 2, 360);
+        setTileGrid();
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(p0, 12));
+    }
     public void newSampleAdded(Sample s) {
         // aggiorniamo la lista di sample in memoria senza dovere rileggere tutto dal db
         if (allSamples != null) {
@@ -145,6 +160,10 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
                 break;
             default:
                 mMap.clear();
+                if(tiles != null){
+                    mMap.addPolygon(tiles.bounds);
+                }
+
         }
         current_view_is_valid=true;
     }
@@ -200,21 +219,8 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     @Override
     public void onMapClick(@NonNull LatLng latLng) {
-        /*
-        // When clicked on map
-        // Initialize marker options
-        MarkerOptions markerOptions=new MarkerOptions();
-        // Set position of marker
-        markerOptions.position(latLng);
-        // Set title of marker
-        markerOptions.title(latLng.latitude+" : "+latLng.longitude);
-        // Remove all marker
-        mMap.clear();
-        // Animating to zoom the marker
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
-        // Add marker on map
-        mMap.addMarker(markerOptions);
-        */
+        setNewZone(latLng);
+
 
     }
 

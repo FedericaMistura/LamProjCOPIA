@@ -23,6 +23,26 @@
         app:key="cell_size_meters"
         app:title="hexagon radius in meters"
        />
+    <EditTextPreference
+        app:defaultValue="30000"
+        app:key="zone_size_meters"
+        app:title="zone size in meters"
+        />
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:key="color_low"
+        android:title="color low"
+        android:defaultValue="#30FF0000"/>
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:key="color_mid"
+        android:title="color mid"
+        android:defaultValue="#30FFFF00"/>
+    <com.rarepebble.colorpicker.ColorPreference
+        android:key="color_high"
+        android:title="color high"
+        android:defaultValue="#3000FF00"/>
+
 
 
 </PreferenceScreen>

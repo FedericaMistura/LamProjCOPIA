@@ -73,5 +73,6 @@ dependencies {
 
     implementation "androidx.preference:preference-ktx:1.2.0"
 
+    implementation 'com.github.martin-stone:hsv-alpha-color-picker-android:3.1.0'
 
 }
