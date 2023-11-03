@@ -66,32 +66,32 @@ public class Tile {
     }
 
     public int getProperFillColor(int viewType){
-        int color= App.A.mapManager.colorNone;
+        int color= App.A.colorNone;
         if (samples.size()>0){
             switch (viewType) {
                 case VIEW_WIFI:
-                    if (avgWifi<App.A.mapManager.wifiLow)
-                        color=App.A.mapManager.colorLow;
-                    else if (avgWifi<App.A.mapManager.wifiMid)
-                        color=App.A.mapManager.colorMid;
+                    if (avgWifi<App.A.wifiLow)
+                        color=App.A.colorLow;
+                    else if (avgWifi<App.A.wifiMid)
+                        color=App.A.colorMid;
                     else
-                        color=App.A.mapManager.colorHigh;
+                        color=App.A.colorHigh;
                     break;
                 case VIEW_LTE:
-                    if (avgLte<App.A.mapManager.lteLow)
-                        color=App.A.mapManager.colorLow;
-                    else if (avgLte<App.A.mapManager.lteMid)
-                        color=App.A.mapManager.colorMid;
+                    if (avgLte<App.A.lteLow)
+                        color=App.A.colorLow;
+                    else if (avgLte<App.A.lteMid)
+                        color=App.A.colorMid;
                     else
-                        color=App.A.mapManager.colorHigh;
+                        color=App.A.colorHigh;
                     break;
                 case VIEW_NOISE:
-                    if (avgNoise<App.A.mapManager.noiseLow)
-                        color=App.A.mapManager.colorLow;
-                    else if (avgNoise<App.A.mapManager.noiseMid)
-                        color=App.A.mapManager.colorMid;
+                    if (avgNoise<App.A.noiseLow)
+                        color=App.A.colorLow;
+                    else if (avgNoise<App.A.noiseMid)
+                        color=App.A.colorMid;
                     else
-                        color=App.A.mapManager.colorHigh;
+                        color=App.A.colorHigh;
                     break;
             }        }
 

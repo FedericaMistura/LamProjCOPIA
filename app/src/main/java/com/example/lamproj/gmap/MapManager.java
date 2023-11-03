@@ -33,19 +33,6 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     public static final int VIEW_WIFI = 1;
     public static final int VIEW_LTE = 2;
     public static final int VIEW_NOISE = 3;
-
-    public int colorNone=0x00000000;
-    public int colorLow=0x30FF0000;
-    public int colorMid=0x30FFFF00;
-    public int colorHigh=0x3000FF00;
-
-    //punti di taglio
-    public double lteLow=-86;
-    public double lteMid=-66;
-    public double wifiLow=-71;
-    public double wifiMid=-50;
-    public double noiseLow=-10;
-    public double noiseMid=-50;
     public int mapType=GoogleMap.MAP_TYPE_SATELLITE;
 
     private Location current_location;
@@ -58,26 +45,21 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     private Runnable timerRunnable;
 
     public TileGrid tiles;
-
-    public  double radiusInMeters = 500;
-    public double zoneSize = 30000;
-
-    LatLng  finaleEmilia = new LatLng(44.830321, 11.290487);
     LatLng  topLeftCorner = null;
 
-
-    //LatLng sanPietro = new LatLng(44.700885, 11.392653);
-
     public int getSamplesCount(){
-        return allSamples.size();
+        if (allSamples != null) {
+            return allSamples.size();
+        } else return 0;
     }
+
     public Location getCurrentLocation() {
         return current_location;
     }
 
     public void setTileGrid(){
         //LatLng BOLOGNA_NW = new LatLng(44.52, 11.286387);
-        tiles = new TileGrid(topLeftCorner, zoneSize, zoneSize, radiusInMeters);
+        tiles = new TileGrid(topLeftCorner, App.A.zoneSize, App.A.zoneSize, App.A.radiusInMeters);
         if(allSamples != null){
             tiles.populate(allSamples);
         }
@@ -133,8 +115,8 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     private void setNewZone(LatLng p0){
         //creiamo il nuovo new TopLeftCorner
 
-        LatLng p1 = SphericalUtil.computeOffset(p0, zoneSize / 2, 270);
-        topLeftCorner = SphericalUtil.computeOffset(p1, zoneSize / 2, 360);
+        LatLng p1 = SphericalUtil.computeOffset(p0, App.A.zoneSize / 2, 270);
+        topLeftCorner = SphericalUtil.computeOffset(p1, App.A.zoneSize / 2, 360);
         setTileGrid();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(p0, 12));
     }
