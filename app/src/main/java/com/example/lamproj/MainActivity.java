@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -101,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else if (id==R.id.action_delete){
             showDeleteSamplesConfirmationDialog();
+        } else if(id == R.id.action_get_help) {
+            navController.navigate(R.id.action_FirstFragment_to_SecondFragment);
         }
 
         return super.onOptionsItemSelected(item);
@@ -188,12 +191,6 @@ public class MainActivity extends AppCompatActivity {
     mostrare messaggio all'utente
      */
     public void snap(String msg){
-
-       /*
-            Snackbar.make(App.A.context, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAnchorView(R.id.fab)
-                    .setAction("Action", null).show();
-        */
         Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG)
                 .setAnchorView(R.id.fab)
                 .setAction("Action", null).show();

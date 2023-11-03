@@ -28,6 +28,11 @@
         android:title="@string/action_delete"
         app:showAsAction="never"/>
     <item
+        android:id="@+id/action_get_help"
+        android:orderInCategory="100"
+        android:title="@string/action_get_help"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_quit"
         android:orderInCategory="100"
         android:title="@string/action_quit"

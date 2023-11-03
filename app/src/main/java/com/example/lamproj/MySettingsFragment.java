@@ -9,7 +9,6 @@ import androidx.preference.PreferenceManager;
 
 import com.rarepebble.colorpicker.ColorPreference;
 
-import com.example.lamproj.tiles.TileGrid;
 
 import java.util.Map;
 
@@ -67,7 +66,7 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
 
         return true;
     }
-    public void onDisplayPreferenceDialog(Preference preference) {
+    public void onDisplayPreferenceDialog(@NonNull Preference preference) {
         if (preference instanceof ColorPreference) {
             ((ColorPreference) preference).showDialog(this, 0);
         } else super.onDisplayPreferenceDialog(preference);

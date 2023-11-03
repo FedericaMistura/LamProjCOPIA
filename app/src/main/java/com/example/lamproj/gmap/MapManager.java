@@ -59,7 +59,6 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     }
 
     public void setTileGrid(){
-        //LatLng BOLOGNA_NW = new LatLng(44.52, 11.286387);
         tiles = new TileGrid(topLeftCorner, App.A.zoneSize, App.A.zoneSize, App.A.radiusInMeters);
         if(allSamples != null){
             tiles.populate(allSamples);
