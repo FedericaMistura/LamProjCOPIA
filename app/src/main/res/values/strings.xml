@@ -14,14 +14,30 @@
     <string name="settings">Settings</string>
 
 
-    <string name="help">
-        Benvenuto su LAM App Project. "\n"
-        In questa app potrai visualizzare la mappa e fare misurazioni riguardo il segnale acustico, il segnale wifi
-        e il segnale LTE. "\n"
-        In base alla media delle misurazioni per ogni campo, la tua area diventerà colorata di
-        ROSSO (povero), GIALLO (medio), VERDE(ottimo)
+    <string name="help">Benvenuto su Lam APP Proj,
+
+    in questa applicazione potrai effettuare delle misurazioni, manualmente o automaticamente, sulla potenza del segnale wifi, lte e sul rumore acustico.
+
+    Nella striscia in alto trovi i dati di LTE, WIFI e NOISE.
+
+    Q: Come posso effettuare le misurazioni manualmente?
+    A: Se vuoi effettuare delle misurazioni manualmente, basta cliccare sui 3 puntini in alto a destra -> "Settings" e verificare che la funzione "automatic sample record" sia disabilitata. Ti accorgerai che la funzione "automatic" è disabilitata quando in basso a destra ti compare un bottone [+] centrale e nella striscia in alto la scritta "manual recording mode".
+
+    Q: Come posso effettuare le misurazioni automaticamente? Posso decidere ogni quanto effettuare una misurazione?
+    A: Se vuoi effettuare delle misurazioni automaticamente, basta cliccare sui 3 puntini in alto a destra -> "Settings" e verificare che la funzione "automatic sample record" sia abilitata. Ti accorgerai che la funzione è abilitata perché il bottone [+] in basso a destra nella mappa scompare. Sempre su settings puoi decidere ogni quanti secondi effettuare una registrazione e ogni quanti metri. Ogni volta che sarà rilevata una misurazione, ti apparirà la scritta "automatic recording mode".
+
+    Q: Come posso visualizzare una mappa specifica di un parametro?
+    A: Devi cliccare sui 3 puntini in alto a sinistra e troverai 3 diversi punti "WiFi map, "LTE map", "noise map". Clicca la mappa che desideri consultare. Una volta selezionata la mappa, comparirà una scritta bianca centrale con il nome del segnale che hai deciso di consultare. Se clicchi ad esempio su WiFi map, troverai la scritta WIFI sulla mappa.
+
+    Q: Come faccio a capire la qualità delle misurazioni che sono state rilevate?
+    A: Controllando la mappa che ti interessa, quindi "LTE map", "Noise map" o "wifi map" noterai che la cella esagonale in cui è stata rilevata una o più misure si colora. Di default, se la cella è colorata di rosso vuol dire che la qualità è povera, se gialla la qualità è media, se verde allora la qualità è buona. Puoi modificare i colori che identificano la qualità.
+
+    Q: Posso modificare i colori che indicano le qualità?
+    A: Assolutamente sì, se clicchi sui 3 pallini in alto a sinistra e poi settings, vedrai che hai la possibilità di cambiare il colore che identifica la qualità della misurazione. Se ad esempio clicchi su "color low", comparirà uno spettro e potrai decidere il colore.
+
+    Q: Posso modificare il raggio della mia cella?
+    A: Sì, cliccando sui 3 pallini in alto a sinistra -> settings -> hexagon radius in meters potrai modificare il raggio in metri dell'esagono.
     </string>
-    <string name="title_activity_maps">MapsActivity</string>
     <string name="permission_required_toast">Location permission is required</string>
     <string name="location_permission_denied">Location requires permission to enable the \'my location \' layer.
     Please try again and grant access to use the location. </string>
