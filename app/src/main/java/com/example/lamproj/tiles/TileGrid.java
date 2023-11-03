@@ -93,10 +93,10 @@ public class TileGrid {
     poi aggiunge nuove tiles.
      */
     public void addToGoogleMap(GoogleMap mMap, int view, boolean clear) {
-        if (clear)
+        if (clear) {
             mMap.clear();
             mMap.addPolygon(bounds);
-
+        }
         for (Tile t : tiles) {
             if (t.hasSamples()) {
                 PolygonOptions polygon = t.getPolygonOptions(view);

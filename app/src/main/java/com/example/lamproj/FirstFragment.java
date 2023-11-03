@@ -1,5 +1,8 @@
 package com.example.lamproj;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
@@ -22,13 +25,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
     private boolean updatesEnabled=false;
-    private TextView tvNoise,  tvLte, tvWifi, tvCount;
+    private TextView tvNoise,  tvLte, tvWifi, tvCount, tvMode, tvViewMode;
     private Handler timerHandler;
     private Runnable timerRunnable;
+    private FloatingActionButton fab;
 
 
     @Override
@@ -49,6 +54,14 @@ public class FirstFragment extends Fragment {
                 startGetUpdates();
             }
         });
+        fab = binding.fab;
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Invoca il metodo per registrare le misurazioni
+                App.A.context.recordStateAndInform("The measurement taken manually");
+            }
+        });
 
         return binding.getRoot();
     }
@@ -60,6 +73,8 @@ public class FirstFragment extends Fragment {
         tvNoise= (TextView) view.findViewById(R.id.txt_noise);
         tvWifi= (TextView) view.findViewById(R.id.txt_wifi);
         tvCount = (TextView) view.findViewById(R.id.txt_count);
+        tvMode = (TextView) view.findViewById(R.id.txt_mode);
+        tvViewMode = (TextView) view.findViewById(R.id.txt_view_mode);
     }
 
     private  void stopGetUpdates(){
@@ -90,6 +105,14 @@ public class FirstFragment extends Fragment {
             tvNoise.setText( String.format("NOISE %.1f dB", App.A.sensorHub.level_noise));
             tvCount.setText( String.format("SAMPLES %d", App.A.mapManager.getSamplesCount()));
         }
+        if(App.A.auto_recording){
+            tvMode.setText("Auto Recording Mode");
+
+        } else {
+            tvMode.setText("Manual Recording Mode");
+        }
+        showManualRecordButton(App.A.auto_recording);
+        tvViewMode.setText(App.A.mapManager.txt_view_mode);
     }
 
     @Override
@@ -99,5 +122,15 @@ public class FirstFragment extends Fragment {
         updatesEnabled=false;
         binding = null;
     }
+    public void showManualRecordButton(boolean state){
+        if(fab != null) { //non sappiamo quando viene chiamato
+            if(state){
+                fab.setVisibility(GONE);
+            } else{
+                fab.setVisibility(VISIBLE);
+            }
+        }
+    }
+
 
 }

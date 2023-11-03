@@ -21,7 +21,10 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
         Map<String,?> pref =  PreferenceManager.getDefaultSharedPreferences(App.A.getApplicationContext()).getAll();
 
         for (String prKey: pref.keySet())  {
-            findPreference(prKey).setOnPreferenceChangeListener(this);
+            Preference pr = findPreference(prKey);
+                    if(pr != null){
+                        pr.setOnPreferenceChangeListener(this);
+                    }
         }
     }
     /*

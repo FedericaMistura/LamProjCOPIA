@@ -46,6 +46,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     public TileGrid tiles;
     LatLng  topLeftCorner = null;
+    public String txt_view_mode = "";
 
     public int getSamplesCount(){
         if (allSamples != null) {
@@ -133,18 +134,22 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         switch(current_view) {
             case VIEW_LTE:
                 showLteData();
+                txt_view_mode = "LTE";
                 break;
             case VIEW_WIFI:
                 showWiFiData();
+                txt_view_mode = "Wifi";
                 break;
             case VIEW_NOISE:
                 showNoiseData();
+                txt_view_mode = "Noise";
                 break;
             default:
                 mMap.clear();
                 if(tiles != null){
                     mMap.addPolygon(tiles.bounds);
                 }
+                txt_view_mode=" ";
 
         }
         current_view_is_valid=true;

@@ -1,5 +1,8 @@
 package com.example.lamproj;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -10,6 +13,7 @@ import android.os.Bundle;
 import com.example.lamproj.data.Sample;
 import com.example.lamproj.data.SampleDbListSampleResultInterface;
 import com.example.lamproj.gmap.MapManager;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean recordinAudioPermissionDenied = false;
     private  NavController navController;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,13 +67,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });*/
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Invoca il metodo per registrare le misurazioni
-                recordStateAndInform("The measurement taken manually");
-            }
-        });
+
     }
 
     @Override
@@ -209,5 +208,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
 
 }
