@@ -40,6 +40,7 @@ public class App extends Application{
     public double auto_recording_seconds = 60;
     public  double radiusInMeters = 500;
     public double zoneSize = 30000;
+    public int nMeasurementsForAverage = 1;
 
 
     public App() {

@@ -18,6 +18,7 @@
         app:key="auto_sample_recording_distance"
         app:title="sample recording distance meters"/>
 
+
     <EditTextPreference
         app:defaultValue="100"
         app:key="cell_size_meters"
@@ -28,6 +29,10 @@
         app:key="zone_size_meters"
         app:title="zone size in meters"
         />
+    <EditTextPreference
+        app:defaultValue="100"
+        app:key="n_measurement"
+        app:title="n measurements"/>
 
     <com.rarepebble.colorpicker.ColorPreference
         android:key="color_low"

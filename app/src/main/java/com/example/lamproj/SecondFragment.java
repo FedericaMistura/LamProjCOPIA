@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,6 +15,8 @@ import com.example.lamproj.databinding.FragmentSecondBinding;
 public class SecondFragment extends Fragment {
 
     private FragmentSecondBinding binding;
+    private TextView tvSecond;
+
 
     @Override
     public View onCreateView(
@@ -22,8 +25,17 @@ public class SecondFragment extends Fragment {
     ) {
 
         binding = FragmentSecondBinding.inflate(inflater, container, false);
+        //tvSecond = getActivity().findViewById(R.id.textview_second);
+        //tvSecond.setText(txt);
         return binding.getRoot();
 
+    }
+
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        String txt = getResources().getString(R.string.help);
+        tvSecond = view.findViewById(R.id.textview_second);
+        tvSecond.setText(txt);
     }
 
     @Override

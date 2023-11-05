@@ -100,7 +100,7 @@ public class FirstFragment extends Fragment {
 
     private void updateMeters(){
         if (tvWifi != null) {
-            tvLte.setText( String.format("  LTE %.1f dBm", App.A.sensorHub.level_lte));
+            tvLte.setText( String.format("  LTE level %.0f", App.A.sensorHub.level_lte));
             tvWifi.setText( String.format(" WIFI %.1f dBm", App.A.sensorHub.level_wifi));
             tvNoise.setText( String.format("NOISE %.1f dB", App.A.sensorHub.level_noise));
             tvCount.setText( String.format("SAMPLES %d", App.A.mapManager.getSamplesCount()));
