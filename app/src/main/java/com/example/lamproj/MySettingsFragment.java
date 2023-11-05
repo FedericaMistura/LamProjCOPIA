@@ -52,16 +52,22 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
                 App.A.zoneSize = Double.parseDouble(newValue.toString());
                 App.A.mapManager.setTileGrid();
                 break;
+            case "n_measurement_average":
+                App.A.nMeasurementsForAverage= Integer.parseInt((String)newValue);
+                break;
 
             case "color_low":
                 App.A.colorLow = (int) newValue;
                 App.A.mapManager.invalidateView(); //ridisegnare con il nuovo valore
+                break;
             case "color_mid":
                 App.A.colorMid = (int) newValue;
                 App.A.mapManager.invalidateView(); //ridisegnare con il nuovo valore
+                break;
             case "color_high":
                 App.A.colorHigh = (int) newValue;
                 App.A.mapManager.invalidateView(); //ridisegnare con il nuovo valore
+                break;
         }
 
         return true;

@@ -177,20 +177,24 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     private void showLteData(){
         current_view=VIEW_LTE;
-        mMap.clear();
-        tiles.addToGoogleMap(mMap, current_view);
+        if (tiles != null) {
+            tiles.addToGoogleMap(mMap, current_view);
+        }
+
     }
 
     private void showWiFiData(){
         current_view=VIEW_WIFI;
-        mMap.clear();
-        tiles.addToGoogleMap(mMap, current_view);
+        if (tiles != null) {
+            tiles.addToGoogleMap(mMap, current_view);
+        }
     }
 
     private void showNoiseData(){
         current_view=VIEW_NOISE;
-        mMap.clear();
-        tiles.addToGoogleMap(mMap, current_view);
+        if (tiles != null) {
+            tiles.addToGoogleMap(mMap, current_view);
+        }
     }
 
 

@@ -30,9 +30,9 @@
         app:title="zone size in meters"
         />
     <EditTextPreference
-        app:defaultValue="100"
-        app:key="n_measurement"
-        app:title="n measurements"/>
+        app:defaultValue="10"
+        app:key="n_measurement_average"
+        app:title="n measurements average"/>
 
     <com.rarepebble.colorpicker.ColorPreference
         android:key="color_low"

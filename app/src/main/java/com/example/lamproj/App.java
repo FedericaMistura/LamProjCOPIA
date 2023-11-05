@@ -40,7 +40,7 @@ public class App extends Application{
     public double auto_recording_seconds = 60;
     public  double radiusInMeters = 500;
     public double zoneSize = 30000;
-    public int nMeasurementsForAverage = 1;
+    public int nMeasurementsForAverage = 10;
 
 
     public App() {
@@ -78,6 +78,7 @@ public class App extends Application{
 
         this.radiusInMeters = getDoubleSetting(pref, "cell_size_meters", 100.0);
         this.zoneSize = getDoubleSetting(pref, "zone_size_meters", 30000.0);
+        this.nMeasurementsForAverage = getIntSetting(pref, "n_measurement_average", 10);
 
         this.colorLow = (int) getSetting(pref, "color_low", 0x30FF0000);
         this.colorMid = (int) getSetting(pref, "color_mid", 0x30FFFF00);
@@ -96,4 +97,9 @@ public class App extends Application{
         } else return defaultValue;
     }
 
+    public static int getIntSetting(Map<String,?> map, String settingName, int defaultValue) {
+        if (map.containsKey(settingName)) {
+            return  Integer.parseInt((String) map.get(settingName));
+        } else return defaultValue;
+    }
 }

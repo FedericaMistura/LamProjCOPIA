@@ -109,10 +109,17 @@ public class TileGrid {
     Aggiunge il sample al relativo tile calcolando la distanza
     */
     public void addSample(Sample s) {
+        Tile t=getTileContainingLatLng(s.latitude,s.longitude);
+        if (t != null) {
+            t.addSample(s);
+        }
+    }
+
+    public Tile getTileContainingLatLng(double latitude, double longitude){
         double dMin = tileRadiusInMeters * 10;
         Tile tMin = null;
         for (Tile t : tiles) {
-            double distance = t.distanceFrom(s.latitude, s.longitude);
+            double distance = t.distanceFrom(latitude, longitude);
             if (distance <= tileRadiusInMeters) {
                 if (distance < dMin) {
                     dMin = distance;
@@ -120,9 +127,7 @@ public class TileGrid {
                 }
             }
         }
-        if (tMin != null) {
-            tMin.addSample(s);
-        }
+        return tMin;
     }
 
     /*

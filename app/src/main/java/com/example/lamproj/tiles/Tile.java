@@ -17,9 +17,11 @@ import com.google.maps.android.SphericalUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Stream;
 
 public class Tile {
     public LatLng center;
@@ -58,12 +60,34 @@ public class Tile {
             avgLte = 0;
             avgWifi = 0;
             avgNoise = 0;
-        } else { //calcoliamo media
-            avgLte = samples.stream().mapToDouble(e -> e.lte).sum() / samples.size();
-            avgWifi = samples.stream().mapToDouble(e -> e.wifi).sum() / samples.size();
-            avgNoise = samples.stream().mapToDouble(e -> e.noise).sum() / samples.size();
+        } else {
+            //calcoliamo la media
+            // nota: generiamo dall'ArrayList samples uno stream per ogni utilizzo
+
+            Stream<Sample> st1,st2,st3; // stream che contengono gli elementi sui quali calcolare la media
+            if (samples.size()<=App.A.nMeasurementsForAverage) {
+                // se la lista contiene meno elementi del massimo previsto, li prendiamo tutti
+                st1=samples.stream();
+                st2=samples.stream();
+                st3=samples.stream();
+            } else {
+                // se la lista contiene più elementi del massimo previsto
+                // li ordiniamo in ordine inverso rispetto al campo "time", preso con il segno negativo
+                // fornito dalla funzione getNegativeTime, in questo modo avremo gli elementi più recenti in cima alla lista
+                // di questi ci prendiamo il numero di elementi previsto da App.A.nMeasurementsForAverage
+                st1=samples.stream().sorted(Comparator.comparingLong(Sample::getNegativeTime)).limit(App.A.nMeasurementsForAverage);
+                st2=samples.stream().sorted(Comparator.comparingLong(Sample::getNegativeTime)).limit(App.A.nMeasurementsForAverage);
+                st3=samples.stream().sorted(Comparator.comparingLong(Sample::getNegativeTime)).limit(App.A.nMeasurementsForAverage);
+            }
+
+            // facciamo la media degli elementi dello stream appropriato
+
+            avgLte =st1.mapToDouble(e -> e.lte).average().getAsDouble();
+            avgWifi = st2.mapToDouble(e -> e.wifi).average().getAsDouble();
+            avgNoise = st3.mapToDouble(e -> e.noise).average().getAsDouble();
         }
     }
+
 
     public int getProperFillColor(int viewType){
         int color= App.A.colorNone;
