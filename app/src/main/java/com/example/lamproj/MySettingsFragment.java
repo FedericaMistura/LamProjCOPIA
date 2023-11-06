@@ -37,10 +37,12 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
                 break;
             case "auto_sample_recording_time":
                 App.A.auto_recording_seconds = Double.parseDouble(newValue.toString());
+                App.A.locationService.requestLocationUpdates();
                 App.A.mapManager.checkNeedForAutoSampleCollectDistance();
                 break;
             case "auto_sample_recording_distance":
                 App.A.auto_recording_meters = Double.parseDouble(newValue.toString());
+                App.A.locationService.requestLocationUpdates();
                 App.A.mapManager.checkNeedForAutoSampleCollectDistance();
                 break;
 

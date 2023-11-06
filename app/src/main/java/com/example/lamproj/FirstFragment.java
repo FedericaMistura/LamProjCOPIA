@@ -105,12 +105,18 @@ public class FirstFragment extends Fragment {
             tvNoise.setText( String.format("NOISE %.1f dB", App.A.sensorHub.level_noise));
             tvCount.setText( String.format("SAMPLES %d", App.A.mapManager.getSamplesCount()));
         }
-        if(App.A.auto_recording){
-            tvMode.setText("Auto Recording Mode");
 
+        if (App.A.mapManager.getCurrentLocation() != null) {
+            if(App.A.auto_recording){
+                tvMode.setText("Recording Mode: AUTO");
+
+            } else {
+                tvMode.setText("Recording Mode: MANUAL");
+            }
         } else {
-            tvMode.setText("Manual Recording Mode");
+            tvMode.setText("WAITING FOR CURRENT LOCATION");
         }
+
         showManualRecordButton(App.A.auto_recording);
         tvViewMode.setText(App.A.mapManager.txt_view_mode);
     }

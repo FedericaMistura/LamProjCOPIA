@@ -24,6 +24,8 @@ public class App extends Application{
     public MapManager mapManager;
     public SensorHub sensorHub;
     public MainActivity context;
+    public LocationService locationService;
+
     public static App A;
     public double lteLow=-86;
     public double lteMid=-66;

@@ -58,19 +58,10 @@ public class SensorHub {
         lteSubSystem.stopMetering();
 
     }
-    /*
-    public void recordLTEState() {
-        lteSubSystem.startMetering();
-    }
 
-    public void recordWiFiState() {
-        wifiSubSystem.startMetering();
-    }
-
-    public void recordNoiseState() {
+    public void startAudioSubSystemMetering(){
         audioSubSystem.startMetering();
     }
-    */
 
 
 }

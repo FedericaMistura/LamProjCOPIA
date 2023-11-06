@@ -6,7 +6,9 @@ import static android.view.View.VISIBLE;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -41,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private static final int RECORD_AUDIO_PERMISSION_REQUEST_CODE = 2;
+    private static final int BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE = 3;
     private boolean locationPermissionDenied = false;
+    private boolean backgroundLocationPermissionDenied = false;
     private boolean recordinAudioPermissionDenied = false;
     private  NavController navController;
 
@@ -143,16 +147,25 @@ public class MainActivity extends AppCompatActivity {
     public void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            App.A.mapManager.mMap.setMyLocationEnabled(true);
+            enableBackgroundLocation();
             return;
         }
         PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,  Manifest.permission.ACCESS_FINE_LOCATION, true);
     }
 
     @SuppressLint("MissingPermission")
+    public void enableBackgroundLocation() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED ) {
+            App.A.mapManager.mMap.setMyLocationEnabled(true);
+            LocationService.start(this);
+            return;
+        }
+        PermissionUtils.requestPermission(this, BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE,  Manifest.permission.ACCESS_BACKGROUND_LOCATION, true);
+    }
+
+    @SuppressLint("MissingPermission")
     public boolean isRecordAudioEnabled() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED ) {
-//            App.A.sensorHub.recordAudioEnabled=true;
             return true;
         }
         PermissionUtils.requestPermission(this, RECORD_AUDIO_PERMISSION_REQUEST_CODE,  Manifest.permission.RECORD_AUDIO, true);
@@ -165,13 +178,21 @@ public class MainActivity extends AppCompatActivity {
             if (PermissionUtils.isPermissionGranted(permissions, grantResults, android.Manifest.permission.ACCESS_FINE_LOCATION) ||
                     PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_COARSE_LOCATION)){
                 enableMyLocation();
+                enableBackgroundLocation();
             } else {
                 locationPermissionDenied = true;
             }
         }
+        else if (requestCode == BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE) {
+            if (PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_BACKGROUND_LOCATION)) {
+                enableBackgroundLocation();
+            } else {
+                backgroundLocationPermissionDenied = true;
+            }
+        }
         else if (requestCode == RECORD_AUDIO_PERMISSION_REQUEST_CODE) {
             if (PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.RECORD_AUDIO)) {
-                isRecordAudioEnabled();
+                App.A.sensorHub.startAudioSubSystemMetering();
             } else {
                 recordinAudioPermissionDenied = true;
             }
@@ -188,11 +209,12 @@ public class MainActivity extends AppCompatActivity {
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
     /*
+
     mostrare messaggio all'utente
      */
     public void snap(String msg){
         Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG)
-                .setAnchorView(R.id.fab)
+//                .setAnchorView(R.id.fab)
                 .setAction("Action", null).show();
     }
 
@@ -205,8 +227,5 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
-
-
 
 }

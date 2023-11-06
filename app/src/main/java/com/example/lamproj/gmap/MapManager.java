@@ -1,14 +1,11 @@
 package com.example.lamproj.gmap;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
+
 import android.location.Location;
-import android.net.wifi.WifiInfo;
+import android.location.LocationListener;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 
 import com.example.lamproj.App;
 import com.example.lamproj.PermissionUtils;
@@ -20,13 +17,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.SphericalUtil;
-
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 
-public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener {
+public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener, LocationListener {
     public GoogleMap mMap=null;
 
     public static final int VIEW_NONE = 0;
@@ -73,18 +67,6 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         mMap.setMapType(mapType);
 
         App.A.context.enableMyLocation();
-
-        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
-            @Override
-            public void onMyLocationChange(Location arg0) {
-                current_location=arg0; //mi serve per creare il nuovo sample
-                if(topLeftCorner == null){
-                    setNewZone(new LatLng(arg0.getLatitude(), arg0.getLongitude()));
-                }
-
-                checkNeedForAutoSampleCollectDistance();
-            }
-        });
 
         // all'inizio ci carichiamo in memoria tutti i samples presenti nel db
         App.A.db.getAllSamples(new SampleDbListSampleResultInterface() {
@@ -161,19 +143,6 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         current_view=view_id;
         invalidateView();
     }
-    /*
-    private void showTestData(){
-        mMap.clear();
-
-        // Add a marker in Bologna and move the camera
-        LatLng BOLOGNA = new LatLng(44.496781, 11.356387);
-        LatLng BOLOGNA_NW = new LatLng(44.52, 11.286387);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(BOLOGNA, 12));
-
-
-
-    }
-    */
 
     private void showLteData(){
         current_view=VIEW_LTE;
@@ -232,9 +201,19 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
             if (dist >= App.A.auto_recording_meters && secs >= App.A.auto_recording_seconds) {
                 String msg = String.format("Measurement taken automatically %.1f meters from previous point", App.A.auto_recording_meters);
                 App.A.context.recordStateAndInform(msg);
+            } else {
+                // non registriamo niente
             }
         }
     }
 
 
+    public void onLocationChanged(@NonNull Location location) {
+        current_location=location; //mi serve per creare il nuovo sample
+        if(topLeftCorner == null){
+            setNewZone(new LatLng(location.getLatitude(),location.getLongitude()));
+        }
+
+        checkNeedForAutoSampleCollectDistance();
+    }
 }
