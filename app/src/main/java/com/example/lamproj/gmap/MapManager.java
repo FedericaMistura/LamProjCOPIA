@@ -11,6 +11,7 @@ import com.example.lamproj.App;
 import com.example.lamproj.PermissionUtils;
 import com.example.lamproj.data.Sample;
 import com.example.lamproj.data.SampleDbListSampleResultInterface;
+import com.example.lamproj.tiles.Tile;
 import com.example.lamproj.tiles.TileGrid;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -41,6 +42,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     public TileGrid tiles;
     LatLng  topLeftCorner = null;
     public String txt_view_mode = "";
+    public Tile currentTile = null;
 
     public int getSamplesCount(){
         if (allSamples != null) {
@@ -210,10 +212,20 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     public void onLocationChanged(@NonNull Location location) {
         current_location=location; //mi serve per creare il nuovo sample
+        if(tiles != null){
+            currentTile = tiles.getTileContainingLatLng(location.getLatitude(),location.getLongitude());
+        }
         if(topLeftCorner == null){
             setNewZone(new LatLng(location.getLatitude(),location.getLongitude()));
         }
 
         checkNeedForAutoSampleCollectDistance();
+    }
+
+    public boolean isNoDataZone(){
+        if (currentTile==null)
+            return true;
+        else
+            return !currentTile.hasSamples();
     }
 }

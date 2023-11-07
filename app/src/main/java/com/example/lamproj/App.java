@@ -27,8 +27,8 @@ public class App extends Application{
     public LocationService locationService;
 
     public static App A;
-    public double lteLow=-86;
-    public double lteMid=-66;
+    public double lteLow=1;
+    public double lteMid=3;
     public double wifiLow=-71;
     public double wifiMid=-50;
     public double noiseLow=-10;

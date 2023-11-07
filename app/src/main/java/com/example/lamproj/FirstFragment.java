@@ -3,38 +3,33 @@ package com.example.lamproj;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.lamproj.databinding.FragmentFirstBinding;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class FirstFragment extends Fragment {
     private FragmentFirstBinding binding;
     private boolean updatesEnabled=false;
-    private TextView tvNoise,  tvLte, tvWifi, tvCount, tvMode, tvViewMode;
+    private TextView tvNoise,  tvLte, tvWifi, tvCount, tvMode, tvViewMode, tvNoData;
     private Handler timerHandler;
     private Runnable timerRunnable;
     private FloatingActionButton fab;
 
+    private Animation anim;
 
     @Override
     public View onCreateView(
@@ -75,12 +70,22 @@ public class FirstFragment extends Fragment {
         tvCount = (TextView) view.findViewById(R.id.txt_count);
         tvMode = (TextView) view.findViewById(R.id.txt_mode);
         tvViewMode = (TextView) view.findViewById(R.id.txt_view_mode);
-    }
+        tvNoData = (TextView) view.findViewById(R.id.txt_no_data);
 
+
+        anim = new AlphaAnimation(0.0f, 1.0f); //Cambia l'alfa dell'oggetto
+        anim.setDuration(500); //You can manage the blinking time with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE); //continua subito a lampeggiare
+    }
+/*
     private  void stopGetUpdates(){
         updatesEnabled=false;
         timerHandler.removeCallbacks(timerRunnable);
     }
+
+ */
 
     private  void startGetUpdates(){
         App.A.sensorHub.startMeters();
@@ -113,11 +118,14 @@ public class FirstFragment extends Fragment {
             } else {
                 tvMode.setText("Recording Mode: MANUAL");
             }
+
+            hideManualRecordButton(App.A.auto_recording);
         } else {
             tvMode.setText("WAITING FOR CURRENT LOCATION");
+            hideManualRecordButton(true);
         }
 
-        showManualRecordButton(App.A.auto_recording);
+
         tvViewMode.setText(App.A.mapManager.txt_view_mode);
     }
 
@@ -128,12 +136,32 @@ public class FirstFragment extends Fragment {
         updatesEnabled=false;
         binding = null;
     }
-    public void showManualRecordButton(boolean state){
+
+
+    /*
+     il bottone "ADD" appare solo quando siamo in manual
+     il no-data warning appare quando siamo in manual e il mapManager ci dice
+     che il tile in cui cade la posizione attuale non contiene samples  o non esiste
+     */
+
+    public void hideManualRecordButton(boolean stateHidden){
+        boolean showNoDataWarning=false;
         if(fab != null) { //non sappiamo quando viene chiamato
-            if(state){
+            if(stateHidden){
                 fab.setVisibility(GONE);
+                showNoDataWarning=false;
+
             } else{
                 fab.setVisibility(VISIBLE);
+                showNoDataWarning=App.A.mapManager.isNoDataZone();
+            }
+
+            if (showNoDataWarning) {
+                tvNoData.setVisibility(VISIBLE);
+                tvNoData.setAnimation(anim);
+            } else {
+                tvNoData.setAnimation(null);
+                tvNoData.setVisibility(GONE);
             }
         }
     }
