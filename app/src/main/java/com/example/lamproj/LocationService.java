@@ -32,6 +32,8 @@ public class LocationService extends Service  {
     private static final String CHANNEL_ID = "LocService";
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
+    private static int CMD_START_FOREGROUND = 1;
+    private static int CMD_STOP_FOREGROUND = 2;
 
     public static void start(Context ctx) {
         Intent serviceIntent = new Intent(ctx, LocationService.class);
@@ -40,39 +42,52 @@ public class LocationService extends Service  {
 
     @SuppressLint("MissingPermission")
     public int onStartCommand(Intent intent, int flags, int startId) {
-        App.A.locationService=this;
-        NotificationChannel chan = new NotificationChannel(
-                CHANNEL_ID,
-                "LamProj Background Location Service",
-                NotificationManager.IMPORTANCE_LOW);
-        chan.setLightColor(Color.BLUE);
-        chan.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
+        int action = intent.getIntExtra("action",1);
 
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.createNotificationChannel(chan);
+        if (action == CMD_START_FOREGROUND) {
+            App.A.locationService=this;
 
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "MyChannelId");
-        Notification notification = notificationBuilder.setOngoing(true)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("running on foreground")
-                .setPriority(NotificationManager.IMPORTANCE_LOW)
-                .setCategory(Notification.CATEGORY_SERVICE)
-                .setChannelId(CHANNEL_ID)
-                .build();
+            NotificationChannel chan = new NotificationChannel(
+                    CHANNEL_ID,
+                    "LamProj Background Location Service",
+                    NotificationManager.IMPORTANCE_LOW);
+            chan.setLightColor(Color.BLUE);
+            chan.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
 
-        startForeground(100, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST);
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(chan);
 
-        // Check if Google Play Services is available on the device
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "MyChannelId");
+            Notification notification = notificationBuilder.setOngoing(true)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("running on foreground")
+                    .setPriority(NotificationManager.IMPORTANCE_LOW)
+                    .setCategory(Notification.CATEGORY_SERVICE)
+                    .setChannelId(CHANNEL_ID)
+                    .build();
 
-        if (resultCode == ConnectionResult.SUCCESS) {
-            // Google Play Services is available
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(App.A.context);
-            createLocationCallback();
-            requestLocationUpdates();
-        } else {
-            // Google Play Services is not available or is outdated, to do Notification
+            startForeground(100, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST);
+
+            // Check if Google Play Services is available on the device
+            GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+            int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+
+            if (resultCode == ConnectionResult.SUCCESS) {
+                // Google Play Services is available
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(App.A.context);
+                createLocationCallback();
+                requestLocationUpdates();
+            } else {
+                // Google Play Services is not available or is outdated, to do Notification
+            }
+            return START_NOT_STICKY;
+        }
+        else if (action == CMD_STOP_FOREGROUND) {
+            fusedLocationClient.removeLocationUpdates(locationCallback);
+            App.A.locationService=null;
+            stopForeground(true);
+            stopSelfResult(startId);
+            return START_STICKY;
         }
 
         return START_NOT_STICKY;
@@ -113,6 +128,11 @@ public class LocationService extends Service  {
             App.A.context. enableMyLocation();
         }
 
+    }
+    public static void stop(Context ctx) {
+        Intent serviceIntent = new Intent(ctx, LocationService.class);
+        serviceIntent.putExtra("action", CMD_STOP_FOREGROUND);
+        ContextCompat.startForegroundService(ctx, serviceIntent);
     }
 
 }

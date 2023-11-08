@@ -102,7 +102,8 @@ public class MainActivity extends AppCompatActivity {
             App.A.mapManager.setCurrentView(MapManager.VIEW_NOISE);
         }
         else if (id==R.id.action_quit) {
-            this.finishAffinity();
+            LocationService.stop(this);
+            finishAndRemoveTask();
         }
         else if (id==R.id.action_delete){
             showDeleteSamplesConfirmationDialog();
