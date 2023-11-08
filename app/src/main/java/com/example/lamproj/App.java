@@ -43,7 +43,7 @@ public class App extends Application{
     public  double radiusInMeters = 500;
     public double zoneSize = 30000;
     public int nMeasurementsForAverage = 10;
-
+    public double last_measurement_seconds = 10;
 
     public App() {
         A=this;
@@ -85,6 +85,7 @@ public class App extends Application{
         this.colorLow = (int) getSetting(pref, "color_low", 0x30FF0000);
         this.colorMid = (int) getSetting(pref, "color_mid", 0x30FFFF00);
         this.colorHigh = (int) getSetting(pref, "color_high", 0x3000FF00);
+        this.last_measurement_seconds = getDoubleSetting(pref, "last_measurement_seconds", 10.0);
 
     }
     public static Object getSetting(Map<String,?> map, String settingName, Object defaultValue) {
@@ -104,4 +105,5 @@ public class App extends Application{
             return  Integer.parseInt((String) map.get(settingName));
         } else return defaultValue;
     }
+
 }

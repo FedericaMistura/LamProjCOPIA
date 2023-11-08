@@ -45,7 +45,6 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
                 App.A.locationService.requestLocationUpdates();
                 App.A.mapManager.checkNeedForAutoSampleCollectDistance();
                 break;
-
             case "cell_size_meters":
                 App.A.radiusInMeters = Double.parseDouble(newValue.toString());
                 App.A.mapManager.setTileGrid();
@@ -57,7 +56,9 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
             case "n_measurement_average":
                 App.A.nMeasurementsForAverage= Integer.parseInt((String)newValue);
                 break;
-
+            case "last_measurement_seconds":
+                App.A.last_measurement_seconds =Double.parseDouble(newValue.toString());
+                break;
             case "color_low":
                 App.A.colorLow = (int) newValue;
                 App.A.mapManager.invalidateView(); //ridisegnare con il nuovo valore

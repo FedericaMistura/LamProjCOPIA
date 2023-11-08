@@ -169,6 +169,18 @@ public class Tile {
     public boolean hasSamples(){
         return  samples.size()>0;
     }
+    public boolean hasRecentSamples(double seconds){
+        if(samples.size() > 0){
+            Sample recent = samples.stream().sorted(Comparator.comparingLong(Sample::getNegativeTime)).findFirst().get();
+
+            long currentTime = System.currentTimeMillis();
+
+            return ((currentTime - recent.time) <= (seconds * 1000));
+        } else {
+            return false; //Non ci sono sample recenti
+        }
+
+    }
 
     public double distanceFrom(double latitude, double longitude){
         //distanze in metri

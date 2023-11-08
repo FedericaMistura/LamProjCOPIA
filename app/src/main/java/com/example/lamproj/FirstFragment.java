@@ -153,7 +153,14 @@ public class FirstFragment extends Fragment {
 
             } else{
                 fab.setVisibility(VISIBLE);
-                showNoDataWarning=App.A.mapManager.isNoDataZone();
+                boolean noRecentDataZone = App.A.mapManager.isNoRecentDataZone();
+                boolean noDataZone = App.A.mapManager.isNoDataZone();
+                showNoDataWarning= noDataZone || noRecentDataZone;
+                if(noDataZone){
+                    tvNoData.setText("NO DATA ZONE");
+                } else {
+                    tvNoData.setText("NO RECENT DATA");
+                }
             }
 
             if (showNoDataWarning) {

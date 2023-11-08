@@ -228,4 +228,10 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         else
             return !currentTile.hasSamples();
     }
+    public boolean isNoRecentDataZone(){
+        if (currentTile==null)
+            return true;
+        else
+            return !currentTile.hasRecentSamples(App.A.last_measurement_seconds);
+    }
 }
