@@ -114,15 +114,16 @@ public class FirstFragment extends Fragment {
         if (App.A.mapManager.getCurrentLocation() != null) {
             if(App.A.auto_recording){
                 tvMode.setText("Recording Mode: AUTO");
-
             } else {
                 tvMode.setText("Recording Mode: MANUAL");
             }
-
             hideManualRecordButton(App.A.auto_recording);
+            showDataWarningIfAppropriate();
         } else {
             tvMode.setText("WAITING FOR CURRENT LOCATION");
             hideManualRecordButton(true);
+            tvNoData.setAnimation(null);
+            tvNoData.setVisibility(GONE);
         }
 
 
@@ -144,34 +145,35 @@ public class FirstFragment extends Fragment {
      che il tile in cui cade la posizione attuale non contiene samples  o non esiste
      */
 
-    public void hideManualRecordButton(boolean stateHidden){
+    public void showDataWarningIfAppropriate() {
         boolean showNoDataWarning=false;
-        if(fab != null) { //non sappiamo quando viene chiamato
-            if(stateHidden){
-                fab.setVisibility(GONE);
-                showNoDataWarning=false;
 
-            } else{
-                fab.setVisibility(VISIBLE);
-                boolean noRecentDataZone = App.A.mapManager.isNoRecentDataZone();
-                boolean noDataZone = App.A.mapManager.isNoDataZone();
-                showNoDataWarning= noDataZone || noRecentDataZone;
-                if(noDataZone){
-                    tvNoData.setText("NO DATA ZONE");
-                } else {
-                    tvNoData.setText("NO RECENT DATA");
-                }
-            }
+        boolean noRecentDataZone = App.A.mapManager.isNoRecentDataZone();
+        boolean noDataZone = App.A.mapManager.isNoDataZone();
+        showNoDataWarning= noDataZone || noRecentDataZone;
 
-            if (showNoDataWarning) {
-                tvNoData.setVisibility(VISIBLE);
-                tvNoData.setAnimation(anim);
-            } else {
-                tvNoData.setAnimation(null);
-                tvNoData.setVisibility(GONE);
-            }
+        if(noDataZone){
+            tvNoData.setText("NO DATA ZONE");
+        } else {
+            tvNoData.setText("NO RECENT DATA");
+        }
+
+        if (showNoDataWarning) {
+            tvNoData.setVisibility(VISIBLE);
+            tvNoData.setAnimation(anim);
+        } else {
+            tvNoData.setAnimation(null);
+            tvNoData.setVisibility(GONE);
         }
     }
 
-
+    public void hideManualRecordButton(boolean stateHidden){
+        if(fab != null) { //non sappiamo quando viene chiamato
+            if(stateHidden){
+                fab.setVisibility(GONE);
+            } else{
+                fab.setVisibility(VISIBLE);
+            }
+        }
+    }
 }

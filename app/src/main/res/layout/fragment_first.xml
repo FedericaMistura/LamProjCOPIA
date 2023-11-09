@@ -87,7 +87,6 @@
         android:text=""
         android:textColor="@color/white" />
 
-
     <TextView
         android:textSize="30dp"
         android:textAlignment="center"
@@ -95,9 +94,11 @@
         android:id="@+id/txt_no_data"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/fab"
+        android:layout_alignBottom="@id/gmap"
+        android:layout_marginBottom="14dp"
         android:text="NO DATA ZONE"
         android:textColor="#FFFF0000"/>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
