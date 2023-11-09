@@ -1,30 +1,25 @@
 package com.example.lamproj;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 
-import com.example.lamproj.data.Sample;
-import com.example.lamproj.data.SampleDbListSampleResultInterface;
 import com.example.lamproj.gmap.MapManager;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
-
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -34,8 +29,6 @@ import com.example.lamproj.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean backgroundLocationPermissionDenied = false;
     private boolean recordinAudioPermissionDenied = false;
     private  NavController navController;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,15 +55,6 @@ public class MainActivity extends AppCompatActivity {
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-        /*
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(binding.getRoot(), "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAnchorView(R.id.fab)
-                        .setAction("Action", null).show();
-            }
-        });*/
 
     }
 
@@ -153,12 +136,16 @@ public class MainActivity extends AppCompatActivity {
         }
         PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,  Manifest.permission.ACCESS_FINE_LOCATION, true);
     }
-
+    /*
+    Si registra come ricevitore di messaggi
+    subito dopo aver startato il locationservice
+     */
     @SuppressLint("MissingPermission")
     public void enableBackgroundLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED ) {
             App.A.mapManager.mMap.setMyLocationEnabled(true);
             LocationService.start(this);
+            LocalBroadcastManager.getInstance(this).registerReceiver(  mMessageReceiver, new IntentFilter("LocationUpdate"));
             return;
         }
         PermissionUtils.requestPermission(this, BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE,  Manifest.permission.ACCESS_BACKGROUND_LOCATION, true);
@@ -215,18 +202,26 @@ public class MainActivity extends AppCompatActivity {
      */
     public void snap(String msg){
         Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG)
-//                .setAnchorView(R.id.fab)
                 .setAction("Action", null).show();
     }
 
     public void recordStateAndInform(String msg){
 
         App.A.sensorHub.recordNewSample();
-
-//            String message = "The measurement you have taken has been successful";
         snap(msg);
-
-
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra("Status");
+            Bundle b = intent.getBundleExtra("Location");
+            Location lastKnownLoc = (Location) b.getParcelable("Location");
+            if (lastKnownLoc != null) {
+                App.A.mapManager.onLocationChanged(lastKnownLoc);
+            }
+        }
+    };
 
 }

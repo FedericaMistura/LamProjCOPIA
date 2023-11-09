@@ -13,12 +13,14 @@ import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.graphics.Color;
 import android.location.Location;
+import android.os.Bundle;
 import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -37,8 +39,16 @@ public class LocationService extends Service  {
 
     public static void start(Context ctx) {
         Intent serviceIntent = new Intent(ctx, LocationService.class);
+        serviceIntent.putExtra("action", CMD_START_FOREGROUND);
         ContextCompat.startForegroundService(ctx, serviceIntent);
     }
+
+    public static void stop(Context ctx) {
+        Intent serviceIntent = new Intent(ctx, LocationService.class);
+        serviceIntent.putExtra("action", CMD_STOP_FOREGROUND);
+        ContextCompat.startForegroundService(ctx, serviceIntent);
+    }
+
 
     @SuppressLint("MissingPermission")
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -110,7 +120,8 @@ public class LocationService extends Service  {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 Location location = locationResult.getLastLocation();
-                App.A.mapManager.onLocationChanged(location);
+//                App.A.mapManager.onLocationChanged(location);
+                broadcastMessage(location,"ok");
             }
         };
     }
@@ -129,10 +140,14 @@ public class LocationService extends Service  {
         }
 
     }
-    public static void stop(Context ctx) {
-        Intent serviceIntent = new Intent(ctx, LocationService.class);
-        serviceIntent.putExtra("action", CMD_STOP_FOREGROUND);
-        ContextCompat.startForegroundService(ctx, serviceIntent);
+
+    private void broadcastMessage(Location l, String msg) {
+        Intent intent = new Intent("LocationUpdate");
+        intent.putExtra("Status", msg);
+        Bundle b = new Bundle();
+        b.putParcelable("Location", l);
+        intent.putExtra("Location", b);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
 }

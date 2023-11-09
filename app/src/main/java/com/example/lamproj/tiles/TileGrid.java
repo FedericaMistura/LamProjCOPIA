@@ -134,10 +134,23 @@ public class TileGrid {
     Aggiunge una lista di samples al tile.
      */
     public void populate(List<Sample> samples) {
-        clearTilesSamples();
-        for (Sample s : samples) {
-            addSample(s);
-        }
+        // popoliamo  i samples delle tiles, e siccome è un processo che dura molto
+        // rendiamo asincrona  l'operazione,
+        // inoltre lavoriamo su una copia della lista per evitare problemi di concorrenza
+        // nel caso il processo principale aggiunge un nuovo sample
+
+        ArrayList<Sample> l = new ArrayList<Sample>(samples);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                clearTilesSamples();
+                for (Sample s : l) {
+                    addSample(s);
+                }
+            }
+        }).start();
+
     }
 
     public void clearTilesSamples() {
