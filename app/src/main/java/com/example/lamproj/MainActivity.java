@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         App.A.context=this;
 
+        //inizializzazione della vista dell'activity
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -58,13 +59,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /*
+    Creazione del menu dell'activity aggiungendo gli elementi
+    alla barra d'azione
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
+    /*
+    Gestione i click della barra del menu
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -85,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             App.A.mapManager.setCurrentView(MapManager.VIEW_NOISE);
         }
         else if (id==R.id.action_quit) {
-            LocationService.stop(this);
+            LocationService.stop(this); //viene stoppato il foreground service quando si chiude l'app
             finishAndRemoveTask();
         }
         else if (id==R.id.action_delete){
@@ -96,7 +102,10 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
-
+    /*
+    Mostra il dialog per confermare o annullare la cancellazione di tutti i samples rilevati
+    Se l'utente conferma, elimina tutti i campioni sia nel database che sulla mappa
+     */
     private void showDeleteSamplesConfirmationDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Confirm deletion of samples.");
@@ -104,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                //cancellazione dei samples dal db
                 App.A.db.deleteAllSamples();
                 App.A.mapManager.clearAllSamples();
                 dialog.dismiss();
@@ -120,23 +130,28 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+    //Controllo di navigazione
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
+    /*
+    Controlla che i permessi di accesso alla posizione siano concessi
+     */
     @SuppressLint("MissingPermission")
     public void enableMyLocation() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            //Quando tutti i permessi sono stati dati
             enableBackgroundLocation();
             return;
         }
         PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,  Manifest.permission.ACCESS_FINE_LOCATION, true);
     }
     /*
+    Registra un Broadcast per ricevere aggiornamenti sulla posizione in background
     Si registra come ricevitore di messaggi
     subito dopo aver startato il locationservice
      */
@@ -151,6 +166,9 @@ public class MainActivity extends AppCompatActivity {
         PermissionUtils.requestPermission(this, BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE,  Manifest.permission.ACCESS_BACKGROUND_LOCATION, true);
     }
 
+    /*
+    Controlla che i permessi audio siano concessi
+     */
     @SuppressLint("MissingPermission")
     public boolean isRecordAudioEnabled() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED ) {
@@ -159,7 +177,9 @@ public class MainActivity extends AppCompatActivity {
         PermissionUtils.requestPermission(this, RECORD_AUDIO_PERMISSION_REQUEST_CODE,  Manifest.permission.RECORD_AUDIO, true);
         return false;
     }
-
+    /*
+    Gestione delle risposte alle richieste di permessi
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
@@ -196,21 +216,30 @@ public class MainActivity extends AppCompatActivity {
         PermissionUtils.PermissionDeniedDialog
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
-    /*
 
-    mostrare messaggio all'utente
+    /*
+    mostrare messaggio all'utente nella parte inferiore della schermata
      */
     public void snap(String msg){
         Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
-
+    /*
+    Registrazione di un nuovo campione
+    Mostrare il messaggio all'utente
+     */
     public void recordStateAndInform(String msg){
 
         App.A.sensorHub.recordNewSample();
         snap(msg);
     }
 
+    /*
+    Per ricevere messaggi di aggiornamento sulla posizione quando
+    l'app è in background.
+    Lo stato e la posizione vengono estratti dall'INtent e aggiorna
+    la posizione sulla mappa
+     */
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

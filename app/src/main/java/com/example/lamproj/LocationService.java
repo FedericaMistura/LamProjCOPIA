@@ -37,19 +37,30 @@ public class LocationService extends Service  {
     private static int CMD_START_FOREGROUND = 1;
     private static int CMD_STOP_FOREGROUND = 2;
 
+    /*
+    Avvio del servizio di foreground
+    Creazione dell'intent con l'azione CMD_START
+     */
     public static void start(Context ctx) {
         Intent serviceIntent = new Intent(ctx, LocationService.class);
         serviceIntent.putExtra("action", CMD_START_FOREGROUND);
         ContextCompat.startForegroundService(ctx, serviceIntent);
     }
-
+    /*
+    Fermare il foreground service
+    Creazione dell'intent con l'azione CMD_STOP
+     */
     public static void stop(Context ctx) {
         Intent serviceIntent = new Intent(ctx, LocationService.class);
         serviceIntent.putExtra("action", CMD_STOP_FOREGROUND);
         ContextCompat.startForegroundService(ctx, serviceIntent);
     }
 
-
+    /*
+    viene chiamato quando viene avviato il servizio
+    Gestione delle azioni specificate nell'intent(CMD_STOP, CMD_START)
+    All'avvio del servizio, si ha una notifica e avvia la ricezione degli aggiornamenti sulla posizione
+     */
     @SuppressLint("MissingPermission")
     public int onStartCommand(Intent intent, int flags, int startId) {
         int action = intent.getIntExtra("action",1);
@@ -102,7 +113,9 @@ public class LocationService extends Service  {
 
         return START_NOT_STICKY;
     }
-
+    /*
+    Quando viene distrutto il servizio, rimuove gli aggiornamenti sulla posizione
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -115,24 +128,35 @@ public class LocationService extends Service  {
         return null;
     }
 
+    /*
+    Creazione della locationCallback.
+     */
     private void createLocationCallback() {
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 Location location = locationResult.getLastLocation();
 //                App.A.mapManager.onLocationChanged(location);
+                //Trasmissione dell'aggiornamento sulla posizione
                 broadcastMessage(location,"ok");
             }
         };
     }
 
+    /*
+    Richiesta aggiornamenti sulla posizione utilizzando FusedLocationProviderClient
+
+     */
     public void requestLocationUpdates() {
         LocationRequest locationRequest = LocationRequest.create()
                 .setSmallestDisplacement((float) App.A.auto_recording_meters)
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval((long) (App.A.auto_recording_seconds*1000))
                 .setFastestInterval(500);  // Fastest update interval
-
+        /*
+        Se il permesso è concesso: aggiornamenti sulla posizione
+        altrimenti viene chiamato enableMyLocation()
+         */
         if (ActivityCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
         } else {
@@ -140,7 +164,10 @@ public class LocationService extends Service  {
         }
 
     }
-
+    /*
+    Inviare un messaggio di broadcast tramite LocalBroadCastManager
+    con lo stato e la posizione nel messaggio di broadcast
+     */
     private void broadcastMessage(Location l, String msg) {
         Intent intent = new Intent("LocationUpdate");
         intent.putExtra("Status", msg);
