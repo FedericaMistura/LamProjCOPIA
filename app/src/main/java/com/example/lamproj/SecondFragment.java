@@ -29,8 +29,7 @@ public class SecondFragment extends Fragment {
     ) {
 
         binding = FragmentSecondBinding.inflate(inflater, container, false);
-        //tvSecond = getActivity().findViewById(R.id.textview_second);
-        //tvSecond.setText(txt);
+
         return binding.getRoot();
 
     }

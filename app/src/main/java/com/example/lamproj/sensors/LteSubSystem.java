@@ -12,13 +12,20 @@ public class LteSubSystem {
     private PhoneStateListener phoneStateListener;
     boolean isMetering=false;
 
+    /*
+    Interruzione delle misurazioni,
+    interrompe l'ascolto delle modifiche
+     */
     public void stopMetering(){
         isMetering=false;
         telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
     }
+
+
     public void startMetering() {
         telephonyManager = (TelephonyManager) App.A.context.getSystemService(Context.TELEPHONY_SERVICE);
 
+        //Listenere per gestione eventi
         phoneStateListener = new PhoneStateListener() {
             @Override
             public void onSignalStrengthsChanged(SignalStrength signalStrength) {

@@ -243,7 +243,6 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         }
     }
 
-
     public void onLocationChanged(@NonNull Location location) {
         current_location=location; //mi serve per creare il nuovo sample
         if(tiles != null){
@@ -295,7 +294,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     /*
   Per ricevere messaggi di aggiornamento sulla posizione quando
   l'app è in background.
-  Lo stato e la posizione vengono estratti dall'INtent e aggiorna
+  Lo stato e la posizione vengono estratti dall'Intent e aggiorna
   la posizione sulla mappa
    */
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {

@@ -8,6 +8,10 @@ import com.example.lamproj.data.Sample;
 import com.google.android.material.snackbar.Snackbar;
 
 public class SensorHub {
+    /*
+    Coordinamento e registrazione dei dati provenienti
+    dai 3 sotto-hub: Wifi, Lte, Noise
+     */
     public double level_lte = 0;
     public double level_noise = 0;
     public double level_wifi = 0;
@@ -31,7 +35,7 @@ public class SensorHub {
      */
     public void recordNewSample(){
         Sample s = new Sample();
-
+        //Dati correnti dei sensori
         s.latitude = App.A.mapManager.getCurrentLocation().getLatitude();
         s.longitude = App.A.mapManager.getCurrentLocation().getLongitude();
         s.time= System.currentTimeMillis();
@@ -46,12 +50,19 @@ public class SensorHub {
 
     }
 
+    /*
+    Avvio della lettura dei dati dei sotto-hub dei sensori
 
+     */
     public void startMeters(){
         audioSubSystem.startMetering();
         wifiSubSystem.startMetering();
         lteSubSystem.startMetering();
     }
+
+    /*
+     Arresto della lettura
+     */
     public void stopMeters(){
         audioSubSystem.stopMetering();
         wifiSubSystem.stopMetering();

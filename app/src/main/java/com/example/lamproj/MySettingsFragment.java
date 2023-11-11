@@ -26,15 +26,16 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
-        Map<String,?> pref =  PreferenceManager.getDefaultSharedPreferences(App.A.getApplicationContext()).getAll();
+        Map<String, ?> pref = PreferenceManager.getDefaultSharedPreferences(App.A.getApplicationContext()).getAll();
 
-        for (String prKey: pref.keySet())  {
+        for (String prKey : pref.keySet()) {
             Preference pr = findPreference(prKey);
-                    if(pr != null){
-                        pr.setOnPreferenceChangeListener(this);
-                    }
+            if (pr != null) {
+                pr.setOnPreferenceChangeListener(this);
+            }
         }
     }
+
     /*
     Cattura tutti le modifiche delle preferenza
     Switch per identificare quale è stata cambiata
@@ -66,10 +67,10 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
                 App.A.mapManager.setTileGrid();
                 break;
             case "n_measurement_average":
-                App.A.nMeasurementsForAverage= Integer.parseInt((String)newValue);
+                App.A.nMeasurementsForAverage = Integer.parseInt((String) newValue);
                 break;
             case "last_measurement_seconds":
-                App.A.last_measurement_seconds =Double.parseDouble(newValue.toString());
+                App.A.last_measurement_seconds = Double.parseDouble(newValue.toString());
                 break;
             case "color_low":
                 App.A.colorLow = (int) newValue;
@@ -87,6 +88,7 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
 
         return true;
     }
+
     /*
     Se l'utente vuole cambiare il colore che identifica i 3 tipi di qualità
     delle misurazioni (high, mid, low), viene aperto un dialog in cui può scegliere

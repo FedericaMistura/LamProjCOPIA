@@ -132,6 +132,7 @@ public class FirstFragment extends Fragment {
             } else {
                 tvMode.setText("Recording Mode: MANUAL");
             }
+            //Nasconde il bottone quando l'app è in funzione "Auto"
             hideManualRecordButton(App.A.auto_recording);
             showDataWarningIfAppropriate();
         } else {
@@ -160,10 +161,8 @@ public class FirstFragment extends Fragment {
      il bottone "ADD" appare solo quando siamo in manual
      il no-data warning appare quando siamo in manual e il mapManager ci dice
      che il tile in cui cade la posizione attuale non contiene samples  o non esiste
-
-
+     Invia una notifica nel caso in cui non ci siano dati recenti per quel tile
      */
-
     public void showDataWarningIfAppropriate() {
         boolean showNoDataWarning=false;
         boolean noRecentDataZone = App.A.mapManager.isNoRecentDataZone();

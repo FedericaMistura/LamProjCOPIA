@@ -20,17 +20,20 @@ public class WifiSubSystem {
         isMetering=false;
         timerHandler.removeCallbacks(timerRunnable);
     }
+
+
     public void startMetering() {
         wifiManager = (WifiManager) App.A.context.getSystemService(Context.WIFI_SERVICE);
         isMetering = true;
         timerHandler = new Handler();
+        //Gestione del monitoraggio continuo del segnale
         timerRunnable = new Runnable() {
             @Override
             public void run() {
                 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-                App.A.sensorHub.level_wifi= wifiInfo.getRssi();
+                App.A.sensorHub.level_wifi= wifiInfo.getRssi(); //Ottenimento del livello di segnale
                 if (isMetering) {
-                    timerHandler.postDelayed(this, 500);
+                    timerHandler.postDelayed(this, 500); //Esecuzione del metodo Run ogni 500 ms
                 }
             }
         };

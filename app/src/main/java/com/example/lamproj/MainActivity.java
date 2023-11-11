@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton("YES", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //cancellazione dei samples dal db
+                //cancellazione dei samples dal db e dalla mappa
                 App.A.db.deleteAllSamples();
                 App.A.mapManager.clearAllSamples();
                 dialog.dismiss();
@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
+
     //Controllo di navigazione
     @Override
     public boolean onSupportNavigateUp() {
@@ -144,6 +145,8 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+
     /*
     Controlla che i permessi di accesso alla posizione siano concessi
      */
@@ -155,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
             enableBackgroundLocation();
             return;
         }
+        //Richiesta permesso di accesso alla posizione
         PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,  Manifest.permission.ACCESS_FINE_LOCATION, true);
     }
 
@@ -232,35 +236,5 @@ public class MainActivity extends AppCompatActivity {
                 .setAction("Action", null).show();
     }
 
-    /*
-    Registrazione di un nuovo campione
-    Mostrare il messaggio all'utente
-     */
-    /*
-    public void recordStateAndInform(String msg){
-
-        App.A.sensorHub.recordNewSample();
-        snap(msg);
-    }
-
-
-    Per ricevere messaggi di aggiornamento sulla posizione quando
-    l'app è in background.
-    Lo stato e la posizione vengono estratti dall'INtent e aggiorna
-    la posizione sulla mappa
-
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Get extra data included in the Intent
-            String message = intent.getStringExtra("Status");
-            Bundle b = intent.getBundleExtra("Location");
-            Location lastKnownLoc = (Location) b.getParcelable("Location");
-            if (lastKnownLoc != null) {
-                App.A.mapManager.onLocationChanged(lastKnownLoc);
-            }
-        }
-    };
-    */
 
 }

@@ -23,6 +23,9 @@ public class AudioSubSystem {
         isRecording=false;
     }
 
+    /*
+    Verifica se la registrazione audio è abilitata
+     */
     @SuppressLint("MissingPermission")
     public void startMetering() {
         if (audioRecord == null) {
@@ -39,24 +42,25 @@ public class AudioSubSystem {
             audioRecord.startRecording();
 
             isRecording = true;
-
+            //Avvio thread per registrazione audio
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     while (isRecording) {
+                        //Continua sempre a leggere i dati audio
                         int bufferReadResult = audioRecord.read(audioData, 0, audioData.length);
 
                         if (bufferReadResult == AudioRecord.ERROR_INVALID_OPERATION || bufferReadResult == AudioRecord.ERROR_BAD_VALUE) {
                             Log.e("AudioRecord", "Error reading audio data");
                         } else {
-                            // Calculate amplitude
-                            int maxAmplitude = 0;
+                            // Calcola ampliezza
+                            int maxAmplitude = 0; //Calcolato il valore massimo nel buffer audio
                             for (short sample : audioData) {
                                 if (Math.abs(sample) > maxAmplitude) {
                                     maxAmplitude = Math.abs(sample);
                                 }
                             }
-                            App.A.sensorHub.level_noise=getDbValue( maxAmplitude);
+                            App.A.sensorHub.level_noise=getDbValue( maxAmplitude); //Calcolo livello in dB
 //                          Log.d("Audio Loudness", "Max Amplitude: " + maxAmplitude);
                         }
                     }
@@ -67,7 +71,7 @@ public class AudioSubSystem {
     }
 
     public double getDbValue(double amplitude) {
-        double referenceLevel = 32768.0; // The reference level for 16-bit audio
+        double referenceLevel = 32768.0; //Il valore di riferimento per 16 bit di audio
         return 20 * Math.log10(amplitude / referenceLevel);
     }
 
