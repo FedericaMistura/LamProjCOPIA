@@ -59,6 +59,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        App.A.context=null;
+    }
+
+
     /*
     Creazione del menu dell'activity aggiungendo gli elementi
     alla barra d'azione
@@ -150,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
         }
         PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,  Manifest.permission.ACCESS_FINE_LOCATION, true);
     }
+
     /*
     Registra un Broadcast per ricevere aggiornamenti sulla posizione in background
     Si registra come ricevitore di messaggi
@@ -158,9 +166,8 @@ public class MainActivity extends AppCompatActivity {
     @SuppressLint("MissingPermission")
     public void enableBackgroundLocation() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED ) {
-            App.A.mapManager.mMap.setMyLocationEnabled(true);
             LocationService.start(this);
-            LocalBroadcastManager.getInstance(this).registerReceiver(  mMessageReceiver, new IntentFilter("LocationUpdate"));
+            App.A.mapManager.onMyLocationEnabled();
             return;
         }
         PermissionUtils.requestPermission(this, BACKGROUND_LOCATION_PERMISSION_REQUEST_CODE,  Manifest.permission.ACCESS_BACKGROUND_LOCATION, true);
@@ -224,22 +231,24 @@ public class MainActivity extends AppCompatActivity {
         Snackbar.make(binding.getRoot(), msg, Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
     }
+
     /*
     Registrazione di un nuovo campione
     Mostrare il messaggio all'utente
      */
+    /*
     public void recordStateAndInform(String msg){
 
         App.A.sensorHub.recordNewSample();
         snap(msg);
     }
 
-    /*
+
     Per ricevere messaggi di aggiornamento sulla posizione quando
     l'app è in background.
     Lo stato e la posizione vengono estratti dall'INtent e aggiorna
     la posizione sulla mappa
-     */
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -252,5 +261,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+    */
 
 }

@@ -12,6 +12,10 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.lamproj.databinding.FragmentSecondBinding;
 
+/*
+Quando l'utente clicca su "Get help" dal menu, si apre questo fragment
+con le indicazioni su come funziona l'app
+ */
 public class SecondFragment extends Fragment {
 
     private FragmentSecondBinding binding;
@@ -30,7 +34,9 @@ public class SecondFragment extends Fragment {
         return binding.getRoot();
 
     }
-
+    /*
+    Visualizzazione della stringa presente nelle risorse
+     */
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         String txt = getResources().getString(R.string.help);

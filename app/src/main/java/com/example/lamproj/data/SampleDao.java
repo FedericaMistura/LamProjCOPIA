@@ -9,6 +9,11 @@ import java.util.List;
 
 @Dao
 public interface SampleDao {
+
+    /*
+    Restituisce tutti i campioni presenti nel database ordinati in base al tempo
+    In base al tempo perchè serve per calcolare la media delle ultime n misurazioni.
+     */
     @Query("SELECT * FROM sample ORDER BY sample.time")
     List<Sample> getAll();
 

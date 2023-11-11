@@ -22,7 +22,9 @@ public class TileGrid {
 
     public ArrayList<Tile> tiles;
     public PolygonOptions bounds;
-
+    /*
+    Creazione della griglia con dimensioni e raggio, creazione anche della griglia
+     */
     public TileGrid(LatLng _topLeftCorner, double hsize, double vsize, double _tileRadiusInMeters) {
         topLeftCorner = _topLeftCorner;
         tileRadiusInMeters = _tileRadiusInMeters;
@@ -49,7 +51,7 @@ public class TileGrid {
         LatLng c;
         LatLng start = topLeftCorner;
         LatLng tl2 = SphericalUtil.computeOffset(topLeftCorner, offset, 150);
-
+        int contatore = 1;
         for (int row = 0; row < nRows; row++) {
             if ((row % 2) == 1) {
                 start = new LatLng(SphericalUtil.computeOffset(tl2, (row - 1) * tileRadiusInMeters * 1.5, 180).latitude, tl2.longitude);
@@ -63,13 +65,15 @@ public class TileGrid {
                 c = SphericalUtil.computeOffset(start, col * offset, 90);
                 t = new Tile(c, tileRadiusInMeters);
 
-
+                t.id = contatore++;
                 tiles.add(t);
             }
 
         }
     }
-
+    /*
+    Creazione di un'area molto ampia che rappresenta i bordi della griglia
+     */
     private void createBounds(){
         List<LatLng> vert = new ArrayList<>();
         vert.add(topLeftCorner);
@@ -115,6 +119,9 @@ public class TileGrid {
         }
     }
 
+    /*
+    Restituzione dell'area esagonale in qui è presente quella coppia di coordinate
+     */
     public Tile getTileContainingLatLng(double latitude, double longitude){
         double dMin = tileRadiusInMeters * 10;
         Tile tMin = null;
@@ -153,6 +160,10 @@ public class TileGrid {
 
     }
 
+    /*
+    Quando vengono eliminati tutti i samples,
+    vengono eliminati i samples relativi a quel tile
+     */
     public void clearTilesSamples() {
         for (Tile t : tiles) {
             t.clearSamples();

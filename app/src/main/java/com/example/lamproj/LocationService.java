@@ -67,21 +67,21 @@ public class LocationService extends Service  {
 
         if (action == CMD_START_FOREGROUND) {
             App.A.locationService=this;
-
+            //Creazione canale di notifica
             NotificationChannel chan = new NotificationChannel(
                     CHANNEL_ID,
                     "LamProj Background Location Service",
                     NotificationManager.IMPORTANCE_LOW);
             chan.setLightColor(Color.BLUE);
             chan.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
-
+            //Creazione notifica
             NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             manager.createNotificationChannel(chan);
 
-            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "MyChannelId");
+            NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
             Notification notification = notificationBuilder.setOngoing(true)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("running on foreground")
+                    .setContentTitle("LamProj Background Location Service is running on foreground")
                     .setPriority(NotificationManager.IMPORTANCE_LOW)
                     .setCategory(Notification.CATEGORY_SERVICE)
                     .setChannelId(CHANNEL_ID)
@@ -89,12 +89,12 @@ public class LocationService extends Service  {
 
             startForeground(100, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_MANIFEST);
 
-            // Check if Google Play Services is available on the device
+            // Controlla se Google Play Services è disponibile
             GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
             int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
 
             if (resultCode == ConnectionResult.SUCCESS) {
-                // Google Play Services is available
+                // Google Play Services è disponibile
                 fusedLocationClient = LocationServices.getFusedLocationProviderClient(App.A.context);
                 createLocationCallback();
                 requestLocationUpdates();

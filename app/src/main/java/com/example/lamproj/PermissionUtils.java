@@ -12,6 +12,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 
 public abstract class PermissionUtils {
+    /*
+    Richiedere un permesso.
+    Se l'utente ha negato il permesso in precedenza viene visualizzato un dialog
+    Se non è stato richiesto in precedenza, viene richiesto immediatamente.
+    Se l'utente nega il permesso, l'activity si chiude
+     */
     public static void requestPermission(MainActivity activity, int requestId, String permission, boolean finishActivity){
         if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)){
             PermissionUtils.RationaleDialog.newInstance(requestId, finishActivity).show(activity.getSupportFragmentManager(), "dialog");
@@ -20,13 +26,16 @@ public abstract class PermissionUtils {
         }
     }
 
+    /*
+    Verifica se un determinato permesso è stato concesso.
+     */
     public static boolean isPermissionGranted(String[] grantPermissions, int[] grantResults, String permission){
         for (int i = 0; i < grantPermissions.length; i++){
             if(permission.equals(grantPermissions[i])){
                 return grantResults[i] == PackageManager.PERMISSION_GRANTED;
             }
         }
-        return false;
+        return false; //Se non è stato concesso il permesso
     }
 
     public static class PermissionDeniedDialog extends DialogFragment{
@@ -41,6 +50,9 @@ public abstract class PermissionUtils {
             return dialog;
         }
 
+        /*
+        Creazione del dialog per informare l'utente che quel permesso non è stato dato
+         */
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState){
             finishActivity = getArguments().getBoolean(ARGUMENT_FINISH_ACTIVITY);
@@ -51,6 +63,9 @@ public abstract class PermissionUtils {
                     .create();
         }
 
+        /*
+        l'activity viene chiusa ma prima si mostra un messaggio Toast
+         */
         @Override
         public void onDismiss(DialogInterface dialog){
             super.onDismiss(dialog);
@@ -67,6 +82,9 @@ public abstract class PermissionUtils {
         private static final String ARGUMENT_FINISH_ACTIVITY = "finish";
         private boolean finishActivity = false;
 
+        /*
+        Impostazione codice della richiesta del permesso e chiusura o meno dell'activity
+         */
         public static RationaleDialog newInstance(int requestCode, boolean finishActivity){
             Bundle arguments = new Bundle();
             arguments.putInt(ARGUMENT_PERMISSION_REQUEST_CODE, requestCode);
@@ -76,6 +94,9 @@ public abstract class PermissionUtils {
             return dialog;
         }
 
+        /*
+        Dialog per informare l'utente del perchè quel permesso è richiesto
+         */
         @Override
         public Dialog onCreateDialog(Bundle savedInstaceState){
             Bundle arguments = getArguments();
@@ -95,6 +116,10 @@ public abstract class PermissionUtils {
                     .create();
         }
 
+        /*
+        Quando si chiude il dialog, se finishActivity è true,
+        si visualizza un messaggio Toast. Poi l'activity si chiude.
+         */
         @Override
         public void onDismiss(DialogInterface dialog){
             super.onDismiss(dialog);

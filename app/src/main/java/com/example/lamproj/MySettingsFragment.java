@@ -12,8 +12,17 @@ import com.rarepebble.colorpicker.ColorPreference;
 
 import java.util.Map;
 
+/*
+In questa classe vengono gestite tutte le preferenze dell'applicazione.
+In questo modo si consente all'utente di modificare gli aspetti dell'app a suo piacimento
+ */
 public class MySettingsFragment extends PreferenceFragmentCompat implements Preference.OnPreferenceChangeListener {
 
+    /*
+    Struttura delle preferenze scelte dall'utente durante l'uso dell'applicazione
+    Ottiene tutte le preferenze memorizzante in default dell'applicazione e ottiene
+    un listener per le modifiche di ogni preferenza.
+     */
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.preferences, rootKey);
@@ -27,7 +36,10 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
         }
     }
     /*
-    Cattura tutti i cambi di preferenza
+    Cattura tutti le modifiche delle preferenza
+    Switch per identificare quale è stata cambiata
+    L'aggiornamento dei valori richiede aggiornamenti sulla posizione o
+    aggiornamento visualizzazione sulla mappa
      */
     @Override
     public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
@@ -75,6 +87,11 @@ public class MySettingsFragment extends PreferenceFragmentCompat implements Pref
 
         return true;
     }
+    /*
+    Se l'utente vuole cambiare il colore che identifica i 3 tipi di qualità
+    delle misurazioni (high, mid, low), viene aperto un dialog in cui può scegliere
+    da uno spettro di colori.
+     */
     public void onDisplayPreferenceDialog(@NonNull Preference preference) {
         if (preference instanceof ColorPreference) {
             ((ColorPreference) preference).showDialog(this, 0);

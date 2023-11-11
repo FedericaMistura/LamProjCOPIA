@@ -1,14 +1,21 @@
 package com.example.lamproj.gmap;
 
 
+import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.lamproj.App;
-import com.example.lamproj.PermissionUtils;
 import com.example.lamproj.data.Sample;
 import com.example.lamproj.data.SampleDbListSampleResultInterface;
 import com.example.lamproj.tiles.Tile;
@@ -16,7 +23,6 @@ import com.example.lamproj.tiles.TileGrid;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.SphericalUtil;
 import java.util.List;
 
@@ -44,6 +50,7 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     public String txt_view_mode = "";
     public Tile currentTile = null;
 
+
     public int getSamplesCount(){
         if (allSamples != null) {
             return allSamples.size();
@@ -61,6 +68,11 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         }
         invalidateView(); //forzare la riscrittura
     }
+
+    /*
+    quando la mappa è pronta er essere utilizzata.
+    Registra i listener per i click sulla posizione e sulla mappa.
+     */
     public void onMapReady(GoogleMap googleMap) {
         this.mMap=googleMap;
         mMap.setOnMyLocationButtonClickListener(this);
@@ -96,6 +108,9 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
     }
 
+    /*
+    è chiamato quando l'utente clicca sulla mappa per impostare una nuova griglia
+     */
     private void setNewZone(LatLng p0){
         //creiamo il nuovo new TopLeftCorner
 
@@ -104,6 +119,11 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         setTileGrid();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(p0, 12));
     }
+
+    /*
+    Aggiunta di un nuovo sample nella lista e nella griglia
+    invalida la visualizzazione per aggiornarsi
+     */
     public void newSampleAdded(Sample s) {
         // aggiorniamo la lista di sample in memoria senza dovere rileggere tutto dal db
         if (allSamples != null) {
@@ -191,6 +211,11 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
         invalidateView();
     }
 
+    /*
+    Quando l'applicazione è in automatic mode, questo metodo consente
+    di calcolare quando, in base a tempo e distanza, è necessario che si registri automaticamente un nuovo
+    campione.
+     */
     public void checkNeedForAutoSampleCollectDistance() {
         if (App.A.auto_recording && current_location != null) {
             double dist = 1000000.0; // numero  molto grande
@@ -200,12 +225,21 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
                 dist = SphericalUtil.computeDistanceBetween(new LatLng(current_location.getLatitude(), current_location.getLongitude()), App.A.db.mostRecentSample.getLatLng());
                 secs = (System.currentTimeMillis() - App.A.db.mostRecentSample.time) / 1000;
             }
+            //Informa user per nuova registrazione automatica
             if (dist >= App.A.auto_recording_meters && secs >= App.A.auto_recording_seconds) {
                 String msg = String.format("Measurement taken automatically %.1f meters from previous point", App.A.auto_recording_meters);
-                App.A.context.recordStateAndInform(msg);
+                App.A.mapManager.recordStateAndInform(msg);
             } else {
                 // non registriamo niente
             }
+        }
+    }
+
+    protected void onNewTileEntered(Tile t) {
+        if (!t.hasSamples()) {
+            int id=(int) (System.currentTimeMillis() & 0xfffffff);
+            String msg = String.format("Entering Tile id %d with no  samples ",t.id);
+            App.A.sendNotification(id,msg);
         }
     }
 
@@ -213,7 +247,17 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
     public void onLocationChanged(@NonNull Location location) {
         current_location=location; //mi serve per creare il nuovo sample
         if(tiles != null){
-            currentTile = tiles.getTileContainingLatLng(location.getLatitude(),location.getLongitude());
+            Tile t = tiles.getTileContainingLatLng(location.getLatitude(),location.getLongitude());
+            boolean tileChanged=false;
+            if (currentTile == null )
+                tileChanged=true;
+            else
+                //Cambia quando cambia la latitudine o la longitudine
+                tileChanged= currentTile.center.latitude != t.center.latitude ||  currentTile.center.longitude != t.center.longitude;
+            currentTile=t; //Per essere sicuri che tile sia aggiornato
+            if(tileChanged){
+                onNewTileEntered(t);
+            }
         }
         if(topLeftCorner == null){
             setNewZone(new LatLng(location.getLatitude(),location.getLongitude()));
@@ -221,17 +265,73 @@ public class MapManager implements GoogleMap.OnMyLocationButtonClickListener, Go
 
         checkNeedForAutoSampleCollectDistance();
     }
-
+    /*
+    Verifica che il tile corrente non abbia dati
+     */
     public boolean isNoDataZone(){
+
         if (currentTile==null)
-            return true;
+
+            return false;
         else
             return !currentTile.hasSamples();
     }
+    public Tile getCurrentTile(){return currentTile;}
+
+
+
+    /*
+    Verifica che non ci sono dati recenti in quel tile
+    entro l'intervallo di tempo definito dall'utente
+     */
     public boolean isNoRecentDataZone(){
         if (currentTile==null)
-            return true;
+            return false;
         else
             return !currentTile.hasRecentSamples(App.A.last_measurement_seconds);
     }
+
+
+    /*
+  Per ricevere messaggi di aggiornamento sulla posizione quando
+  l'app è in background.
+  Lo stato e la posizione vengono estratti dall'INtent e aggiorna
+  la posizione sulla mappa
+   */
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra("Status");
+            Bundle b = intent.getBundleExtra("Location");
+            Location lastKnownLoc = (Location) b.getParcelable("Location");
+            if (lastKnownLoc != null) {
+                onLocationChanged(lastKnownLoc);
+            }
+        }
+    };
+    /*
+    Viene chiamato dalla MainActivity quando abilita la registrazione
+    Registra il mapManager come client del service.
+     */
+
+    @SuppressLint("MissingPermission")
+    public void onMyLocationEnabled(){
+        mMap.setMyLocationEnabled(true);
+        LocalBroadcastManager.getInstance(App.A.context).registerReceiver(  mMessageReceiver, new IntentFilter("LocationUpdate"));
+    }
+
+    /*
+Registrazione di un nuovo campione
+Mostrare il messaggio all'utente
+ */
+    public void recordStateAndInform(String msg){
+        Log.i("MapManager","sto per registrare un nuovo sample");
+        App.A.sensorHub.recordNewSample();
+        if (App.A.context != null) {
+            App.A.context.snap(msg);
+        }
+    }
+
+
 }

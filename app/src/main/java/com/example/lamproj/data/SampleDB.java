@@ -12,6 +12,9 @@ import java.util.List;
 
 @Database(entities = {Sample.class}, version = 1, exportSchema = false)
 public abstract class SampleDB extends RoomDatabase {
+    /*
+    Per ottenere l'ogggetto DAO associato al database
+     */
     public abstract SampleDao sampleDao();
 
     protected  SampleDao dao;
@@ -21,16 +24,22 @@ public abstract class SampleDB extends RoomDatabase {
 
     public Sample mostRecentSample;
 
+    /*
+    Aggiunta di un campione al data base in modo asincrono
+     */
     public void putSample(Sample s){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 dao.insertAll(s);
-                mostRecentSample=s;
+                mostRecentSample=s; //Aggiornamento con il campione appena inserito
             }
         }).start();
     }
 
+    /*
+    Ottenimento di tutti i campioni presenti nel database in modo asincrono
+     */
     public void getAllSamples(SampleDbListSampleResultInterface receiver){
         List<Sample> samples;
         new Thread(new Runnable() {
@@ -44,6 +53,10 @@ public abstract class SampleDB extends RoomDatabase {
             }
         }).start();
     }
+
+    /*
+    Elimina tutti i campioni nel database in modo asincrono
+     */
     public void deleteAllSamples(){
         new Thread(new Runnable() {
             @Override

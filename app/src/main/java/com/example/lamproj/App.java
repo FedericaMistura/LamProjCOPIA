@@ -1,9 +1,15 @@
 package com.example.lamproj;
 
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 
+import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 import androidx.room.Room;
 
@@ -26,13 +32,17 @@ public class App extends Application{
     public MainActivity context;
     public LocationService locationService;
 
-    public static App A;
+    public static App A; //Accesso globale all'istanza
+
+    //Valori di taglio
     public double lteLow=1;
     public double lteMid=3;
     public double wifiLow=-71;
     public double wifiMid=-50;
     public double noiseLow=-10;
     public double noiseMid=-50;
+
+    //Setting colori
     public int colorNone=0x00000000;
     public int colorLow=0x30FF0000;
     public int colorMid=0x30FFFF00;
@@ -44,7 +54,14 @@ public class App extends Application{
     public double zoneSize = 30000;
     public int nMeasurementsForAverage = 10;
     public double last_measurement_seconds = 10;
+    private static final String CHANNEL_ID = "LamProjApp";
+    NotificationCompat.Builder notificationBuilder = null;
+    NotificationManager manager = null;
 
+    /*
+    Singleton A permette accesso centralizzato e globale a tutte le risorse
+    e gli occetti dell'applicazione
+     */
     public App() {
         A=this;
     }
@@ -54,6 +71,9 @@ public class App extends Application{
         super.onConfigurationChanged(newConfig);
     }
 
+    /*
+    Chiamato quando l'app viene inizializzata
+     */
     @Override
     public void onCreate() {
         super.onCreate();
@@ -62,15 +82,46 @@ public class App extends Application{
          */
         db = Room.databaseBuilder(getApplicationContext(),
                 SampleDB.class, "samples").allowMainThreadQueries().build();
-        mapManager=new MapManager();
+        mapManager=new MapManager(); //Creazione istanza mapManager
         loadSettings();
-        sensorHub=new SensorHub();
+        sensorHub=new SensorHub();  //Inizializzazione sensori
+
+        NotificationChannel chan = new NotificationChannel(
+                CHANNEL_ID,
+                "LamProj Application",
+                NotificationManager.IMPORTANCE_LOW);
+        chan.setLightColor(Color.BLUE);
+        chan.setLockscreenVisibility(Notification.VISIBILITY_SECRET);
+
+        manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.createNotificationChannel(chan);
+
+        notificationBuilder = new NotificationCompat.Builder(this, CHANNEL_ID);
+
+
+    }
+
+    public void sendNotification(int id, String text) {
+        if (notificationBuilder != null) {
+            Notification notification = notificationBuilder.setOngoing(true)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(text)
+                    .setPriority(NotificationManager.IMPORTANCE_LOW)
+                    .setCategory(Notification.CATEGORY_SERVICE)
+                    .setChannelId(CHANNEL_ID)
+                    .build();
+            manager.notify(id,notification);
+        }
     }
     @Override
     public void onLowMemory() {
         super.onLowMemory();
     }
 
+    /*
+    Caricamento impostazioni dell'applicazione che possono essere modificate dall'utente
+
+     */
     public void loadSettings(){
         Map<String,?> pref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getAll();
 
@@ -88,6 +139,10 @@ public class App extends Application{
         this.last_measurement_seconds = getDoubleSetting(pref, "last_measurement_seconds", 10.0);
 
     }
+
+    /*
+    Per ottenere i valori specifici dal Map delle preferenze
+     */
     public static Object getSetting(Map<String,?> map, String settingName, Object defaultValue) {
         if (map.containsKey(settingName)) {
             return  map.get(settingName);

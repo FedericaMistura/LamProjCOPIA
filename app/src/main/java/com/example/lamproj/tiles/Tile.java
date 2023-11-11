@@ -22,7 +22,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Stream;
-
+/*
+Classe per rappresentare l'esagono
+ */
 public class Tile {
     public LatLng center;
     public double radiusInMeters;
@@ -31,7 +33,8 @@ public class Tile {
     private double avgWifi=0;
     private double avgNoise=0;
     private ArrayList<Sample> samples = new ArrayList<Sample>();
-
+    public boolean notificationTimeSent = false;
+    public int id = 0;
 
     public Tile (LatLng c, double r) {
         center=c;
@@ -43,18 +46,22 @@ public class Tile {
         radiusInMeters=r;
     }
     /*
-    Oltre ad aggiungere, fa il ricalcolo della media
+    Aggiunta sample, ricalcolo medie
      */
     public void addSample(Sample s) {
         samples.add(s);
         recalcAvg();
+        notificationTimeSent = false;
     }
-    //Elimina i samples
+    //Eliminazione di tutti i samples, ricalcolo medie
     public void clearSamples() {
         samples.clear();
         recalcAvg();
     }
-
+    /*
+    Calcolo delle medie prendendo gli ultimi n valori
+    registrati. N può essere deciso dall'utente nei settings
+     */
     protected  void recalcAvg() {
         if (samples.size() == 0) {
             avgLte = 0;
@@ -88,7 +95,10 @@ public class Tile {
         }
     }
 
-
+    /*
+    Colora correttamente l'esagono in base al tipo di vista (WiFi, LTE, noise)
+    secondo la media calcolata per ogni tipo di rilevazione.
+     */
     public int getProperFillColor(int viewType){
         int color= App.A.colorNone;
         if (samples.size()>0){
@@ -132,23 +142,6 @@ public class Tile {
         return polygon;
     }
 
-    /*
-    public PolygonOptions setColorHexagone(){
-        if(polygon == null){
-            polygon = this.toPolygon();
-        }
-
-        polygon.strokeColor(0x30808080);
-        if(samples.size()<= 10){
-            polygon.fillColor(0x90ff0000);
-        } else if(samples.size() <= 25){
-            polygon.fillColor(0x90ffff00);
-        } else {
-            polygon.fillColor(0x9000ff00);
-        }
-        return polygon;
-    }
-   */
     private PolygonOptions toPolygon(){
         PolygonOptions polygonOptions = new PolygonOptions()
                 .addAll(createHexagon(center,radiusInMeters))
@@ -156,7 +149,9 @@ public class Tile {
 
         return polygonOptions;
     }
-
+    /*
+    Creazione dell'area identificata come un esagono
+     */
     private List<LatLng> createHexagon(LatLng center, double radiusInMeters){
         List<LatLng> hexagon = new ArrayList<>();
         double angle = 60.0;
@@ -182,6 +177,10 @@ public class Tile {
 
     }
 
+    /*
+    Calcola la distanza in metri tra il centro dell'esagono e il punto di rilevazione.
+    In questo modo si può capire dentro quale area ricade il punto.
+     */
     public double distanceFrom(double latitude, double longitude){
         //distanze in metri
         return SphericalUtil.computeDistanceBetween(center, new LatLng(latitude, longitude));
