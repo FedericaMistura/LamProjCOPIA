@@ -35,8 +35,8 @@ public class App extends Application{
     public static App A; //Accesso globale all'istanza
 
     //Valori di taglio
-    public double lteLow=1;
-    public double lteMid=3;
+    public double lteLow=2; //inferiore di 2 è basso
+    public double lteMid=4; //2 e 3 medio, 4 e 5 buono.
     public double wifiLow=-71;
     public double wifiMid=-50;
     public double noiseLow=-10;
