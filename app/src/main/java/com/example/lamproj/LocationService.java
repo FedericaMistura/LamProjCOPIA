@@ -120,7 +120,18 @@ public class LocationService extends Service  {
     public void onDestroy() {
         super.onDestroy();
         fusedLocationClient.removeLocationUpdates( locationCallback );
+        clearNotifications();
     }
+    private void clearNotifications(){
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Cancel all notifications associated with your app
+        if (manager != null) {
+            manager.cancelAll();
+        }
+    }
+
+
 
     @Nullable
     @Override
