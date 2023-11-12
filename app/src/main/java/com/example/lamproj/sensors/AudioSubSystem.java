@@ -29,15 +29,13 @@ public class AudioSubSystem {
     @SuppressLint("MissingPermission")
     public void startMetering() {
         if (audioRecord == null) {
-            bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
             if (! App.A.context.isRecordAudioEnabled()){
                 return;
             }
-            audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT, bufferSize);
             bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
             audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT, bufferSize);
 
-            final short[] audioData = new short[bufferSize / 2]; // 16-bit audio, so divide by 2
+            final short[] audioData = new short[bufferSize / 2]; // 16-bit audio, quindi dividi per 2
 
             audioRecord.startRecording();
 
