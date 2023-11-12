@@ -1,12 +1,10 @@
 package com.example.lamproj.sensors;
 
 import android.content.Context;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
-import android.util.Log;
+
 
 import com.example.lamproj.App;
 

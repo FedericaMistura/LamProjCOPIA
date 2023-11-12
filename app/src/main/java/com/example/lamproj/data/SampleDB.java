@@ -13,7 +13,7 @@ import java.util.List;
 @Database(entities = {Sample.class}, version = 1, exportSchema = false)
 public abstract class SampleDB extends RoomDatabase {
     /*
-    Per ottenere l'ogggetto DAO associato al database
+    Per ottenere l'oggetto DAO associato al database
      */
     public abstract SampleDao sampleDao();
 

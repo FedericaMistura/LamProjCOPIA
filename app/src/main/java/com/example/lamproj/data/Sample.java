@@ -46,10 +46,6 @@ public class Sample {
     public LatLng getLatLng(){
         return new LatLng( latitude,longitude);
     }
-
-    public long getTime(){
-        return time;
-    }
     public long getNegativeTime(){
         return -time;
     }

@@ -6,9 +6,6 @@ import static com.example.lamproj.gmap.MapManager.VIEW_WIFI;
 
 import android.graphics.Color;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.example.lamproj.App;
 import com.example.lamproj.data.Sample;
 import com.google.android.gms.maps.model.LatLng;
@@ -16,11 +13,11 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.maps.android.SphericalUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
+
 import java.util.Comparator;
-import java.util.Iterator;
+
 import java.util.List;
-import java.util.ListIterator;
+
 import java.util.stream.Stream;
 /*
 Classe per rappresentare l'esagono
